@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import categoriaRoutes from './categoriaRoutes.js';
+import productoRoutes from './productoRoutes.js';
+
 
 const router = Router();
 
@@ -13,5 +15,6 @@ router.get('/health', (req, res) => {
 
 // Rutas de Categorías
 router.use('/categorias', categoriaRoutes);
+router.use('/productos', productoRoutes);
 
 export default router;
