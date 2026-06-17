@@ -21,7 +21,7 @@ Usuario.hasOne(Carrito, { foreignKey: 'idUsuario', as: 'carrito' });
 Carrito.belongsTo(Usuario, { foreignKey: 'idUsuario' });
 
 Usuario.hasMany(Pedido, { foreignKey: 'idUsuario', as: 'pedidos' });
-Pedido.belongsTo(Usuario, { foreignKey: 'idUsuario' });
+Pedido.belongsTo(Usuario, {   foreignKey: 'idUsuario',   as: 'usuario' });
 
 // Relaciones de Producto y Categoria
 Categoria.hasMany(Producto, { foreignKey: 'idCategoria', as: 'productos' });

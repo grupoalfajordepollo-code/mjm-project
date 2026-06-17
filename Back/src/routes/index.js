@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import usuarioRoutes from './usuarioRoutes.js'
+
+import usuarioRoutes from './usuarioRoutes.js';
 import categoriaRoutes from './categoriaRoutes.js';
 import productoRoutes from './productoRoutes.js';
-
+import pedidoRoutes from './pedidoRoutes.js';
 
 const router = Router();
 
-// Ruta de prueba para verificar que el servidor funciona
+// Ruta de prueba
 router.get('/health', (req, res) => {
   res.json({
     status: 'ok',
@@ -14,12 +15,17 @@ router.get('/health', (req, res) => {
   });
 });
 
-//Rutas de usuario
+// Usuarios
 router.use('/usuarios', usuarioRoutes);
 
-export default router;
-// Rutas de Categorías
+// Categorías
 router.use('/categorias', categoriaRoutes);
+
+// Productos
 router.use('/productos', productoRoutes);
 
+// Pedidos
+router.use('/pedidos', pedidoRoutes);
+
 export default router;
+
