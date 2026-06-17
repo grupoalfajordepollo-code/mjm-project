@@ -11,38 +11,102 @@ import ItemxPedido from './ItemxPedido.js';
 import Pago from './Pago.js';
 
 // Relaciones de Usuario
-Usuario.hasMany(Telefono, { foreignKey: 'idUsuario', as: 'telefonos' });
-Telefono.belongsTo(Usuario, { foreignKey: 'idUsuario' });
+Usuario.hasMany(Telefono, {
+  foreignKey: 'idUsuario',
+  as: 'telefonos'
+});
+Telefono.belongsTo(Usuario, {
+  foreignKey: 'idUsuario'
+});
 
-Usuario.hasMany(Domicilio, { foreignKey: 'idUsuario', as: 'domicilios' });
-Domicilio.belongsTo(Usuario, { foreignKey: 'idUsuario' });
+Usuario.hasMany(Domicilio, {
+  foreignKey: 'idUsuario',
+  as: 'domicilios'
+});
+Domicilio.belongsTo(Usuario, {
+  foreignKey: 'idUsuario'
+});
 
-Usuario.hasOne(Carrito, { foreignKey: 'idUsuario', as: 'carrito' });
-Carrito.belongsTo(Usuario, { foreignKey: 'idUsuario' });
+Usuario.hasOne(Carrito, {
+  foreignKey: 'idUsuario',
+  as: 'carrito'
+});
 
-Usuario.hasMany(Pedido, { foreignKey: 'idUsuario', as: 'pedidos' });
-Pedido.belongsTo(Usuario, {   foreignKey: 'idUsuario',   as: 'usuario' });
+Carrito.belongsTo(Usuario, {
+  foreignKey: 'idUsuario',
+  as: 'usuario'
+});
+
+Usuario.hasMany(Pedido, {
+  foreignKey: 'idUsuario',
+  as: 'pedidos'
+});
+
+Pedido.belongsTo(Usuario, {
+  foreignKey: 'idUsuario',
+  as: 'usuario'
+});
 
 // Relaciones de Producto y Categoria
-Categoria.hasMany(Producto, { foreignKey: 'idCategoria', as: 'productos' });
-Producto.belongsTo(Categoria, { foreignKey: 'idCategoria', as: 'categoria' });
+Categoria.hasMany(Producto, {
+  foreignKey: 'idCategoria',
+  as: 'productos'
+});
+
+Producto.belongsTo(Categoria, {
+  foreignKey: 'idCategoria',
+  as: 'categoria'
+});
 
 // Relaciones de Carrito
-Carrito.hasMany(ItemxCarrito, { foreignKey: 'idCarrito', as: 'items' });
-ItemxCarrito.belongsTo(Carrito, { foreignKey: 'idCarrito' });
+Carrito.hasMany(ItemxCarrito, {
+  foreignKey: 'idCarrito',
+  as: 'items'
+});
 
-Producto.hasMany(ItemxCarrito, { foreignKey: 'idProducto' });
-ItemxCarrito.belongsTo(Producto, { foreignKey: 'idProducto', as: 'producto' });
+ItemxCarrito.belongsTo(Carrito, {
+  foreignKey: 'idCarrito',
+  as: 'carrito'
+});
+
+Producto.hasMany(ItemxCarrito, {
+  foreignKey: 'idProducto'
+});
+
+ItemxCarrito.belongsTo(Producto, {
+  foreignKey: 'idProducto',
+  as: 'producto'
+});
 
 // Relaciones de Pedido
-Pedido.hasMany(ItemxPedido, { foreignKey: 'idPedido', as: 'items' });
-ItemxPedido.belongsTo(Pedido, { foreignKey: 'idPedido' });
+Pedido.hasMany(ItemxPedido, {
+  foreignKey: 'idPedido',
+  as: 'items'
+});
 
-Producto.hasMany(ItemxPedido, { foreignKey: 'idProducto' });
-ItemxPedido.belongsTo(Producto, { foreignKey: 'idProducto', as: 'producto' });
+ItemxPedido.belongsTo(Pedido, {
+  foreignKey: 'idPedido',
+  as: 'pedido'
+});
 
-Pedido.hasOne(Pago, { foreignKey: 'idPedido', as: 'pago' });
-Pago.belongsTo(Pedido, { foreignKey: 'idPedido' });
+Producto.hasMany(ItemxPedido, {
+  foreignKey: 'idProducto'
+});
+
+ItemxPedido.belongsTo(Producto, {
+  foreignKey: 'idProducto',
+  as: 'producto'
+});
+
+Pedido.hasOne(Pago, {
+  foreignKey: 'idPedido',
+  as: 'pago'
+});
+
+Pago.belongsTo(Pedido, {
+  foreignKey: 'idPedido',
+  as: 'pedido'
+});
 
 export {
   Administrador,
@@ -57,3 +121,4 @@ export {
   ItemxPedido,
   Pago
 };
+
