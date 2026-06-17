@@ -4,6 +4,7 @@ import usuarioRoutes from './usuarioRoutes.js';
 import categoriaRoutes from './categoriaRoutes.js';
 import productoRoutes from './productoRoutes.js';
 import pedidoRoutes from './pedidoRoutes.js';
+import carritoRoutes from "./carritoRoutes.js";
 
 const router = Router();
 
@@ -26,6 +27,9 @@ router.use('/productos', productoRoutes);
 
 // Pedidos
 router.use('/pedidos', pedidoRoutes);
+
+// Carritos
+router.use("/carritos", carritoRoutes);
 
 export default router;
 
