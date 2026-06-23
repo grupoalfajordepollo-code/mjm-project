@@ -47,6 +47,7 @@ Pedido.belongsTo(Usuario, {
   as: 'usuario'
 });
 
+
 // Relaciones de Producto y Categoría
 Categoria.hasMany(Producto, {
   foreignKey: 'idCategoria',
