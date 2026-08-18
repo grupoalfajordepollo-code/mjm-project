@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
+import bcrypt from 'bcryptjs';
 
 const Usuario = sequelize.define('Usuario', {
   id: {
@@ -30,7 +31,21 @@ const Usuario = sequelize.define('Usuario', {
   }
 }, {
   tableName: 'Usuario',
-  timestamps: false
+  timestamps: false,
+  hooks: {
+    beforeSave: async (usuario) => {
+      if (usuario.changed('password')) {
+        const salt = await bcrypt.genSalt(10);
+        usuario.password = await bcrypt.hash(usuario.password, salt);
+      }
+    }
+  }
+
+
 });
+
+Usuario.prototype.comprobarPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
 
 export default Usuario;
