@@ -1,6 +1,6 @@
 import Categoria from "../models/Categoria.js";
 
-// Obtener todas las categorías
+// Obtener todas las categorias
 export const obtenerCategorias = async (req, res) => {
   try {
     const categorias = await Categoria.findAll();
@@ -9,21 +9,20 @@ export const obtenerCategorias = async (req, res) => {
 
   } catch (error) {
     res.status(500).json({
-      mensaje: "Error al obtener las categorías",
+      mensaje: "Error al obtener las categorias",
       error: error.message
     });
   }
 };
 
-// Obtener una categoría por ID
+// Obtener categoria por ID
 export const obtenerCategoria = async (req, res) => {
   try {
-
     const categoria = await Categoria.findByPk(req.params.id);
 
     if (!categoria) {
       return res.status(404).json({
-        mensaje: "Categoría no encontrada"
+        mensaje: "Categoria no encontrada"
       });
     }
 
@@ -36,35 +35,36 @@ export const obtenerCategoria = async (req, res) => {
   }
 };
 
-// Crear categoría
+// Crear categoria
 export const crearCategoria = async (req, res) => {
-
   try {
+    const {
+      nombre,
+      descripcion
+    } = req.body;
 
-    const categoria = await Categoria.create(req.body);
+    const categoria = await Categoria.create({
+      nombre,
+      descripcion
+    });
 
     res.status(201).json(categoria);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 
-// Actualizar categoría
+// Actualizar categoria
 export const actualizarCategoria = async (req, res) => {
-
   try {
-
     const categoria = await Categoria.findByPk(req.params.id);
 
     if (!categoria) {
       return res.status(404).json({
-        mensaje: "Categoría no encontrada"
+        mensaje: "Categoria no encontrada"
       });
     }
 
@@ -73,40 +73,33 @@ export const actualizarCategoria = async (req, res) => {
     res.json(categoria);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 
-// Eliminar categoría
+// Eliminar categoria
 export const eliminarCategoria = async (req, res) => {
-
   try {
-
     const categoria = await Categoria.findByPk(req.params.id);
 
     if (!categoria) {
       return res.status(404).json({
-        mensaje: "Categoría no encontrada"
+        mensaje: "Categoria no encontrada"
       });
     }
 
     await categoria.destroy();
 
     res.json({
-      mensaje: "Categoría eliminada correctamente"
+      mensaje: "Categoria eliminada"
     });
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
+
