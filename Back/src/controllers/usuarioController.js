@@ -3,7 +3,11 @@ import Usuario from "../models/Usuario.js";
 // Obtener todos los usuarios
 export const obtenerUsuarios = async (req, res) => {
   try {
-    const usuarios = await Usuario.findAll();
+    const usuarios = await Usuario.findAll({
+      attributes: {
+        exclude: ["password"]
+      }
+    });
 
     res.status(200).json(usuarios);
 
@@ -18,8 +22,11 @@ export const obtenerUsuarios = async (req, res) => {
 // Obtener un usuario por ID
 export const obtenerUsuario = async (req, res) => {
   try {
-
-    const usuario = await Usuario.findByPk(req.params.id);
+    const usuario = await Usuario.findByPk(req.params.id, {
+      attributes: {
+        exclude: ["password"]
+      }
+    });
 
     if (!usuario) {
       return res.status(404).json({
@@ -36,30 +43,40 @@ export const obtenerUsuario = async (req, res) => {
   }
 };
 
-// Crear Usuario
+// Crear usuario
 export const crearUsuario = async (req, res) => {
-
   try {
+    const {
+      nombre,
+      apellido,
+      email,
+      password,
+      telefono
+    } = req.body;
 
-    const usuario = await Usuario.create(req.body);
+    const usuario = await Usuario.create({
+      nombre,
+      apellido,
+      email,
+      password,
+      telefono
+    });
 
-    res.status(201).json(usuario);
+    const resultado = usuario.toJSON();
+    delete resultado.password;
+
+    res.status(201).json(resultado);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 
 // Actualizar usuario
 export const actualizarUsuario = async (req, res) => {
-
   try {
-
     const usuario = await Usuario.findByPk(req.params.id);
 
     if (!usuario) {
@@ -68,25 +85,37 @@ export const actualizarUsuario = async (req, res) => {
       });
     }
 
-    await usuario.update(req.body);
+    const {
+      nombre,
+      apellido,
+      email,
+      password,
+      telefono
+    } = req.body;
 
-    res.json(usuario);
+    await usuario.update({
+      nombre,
+      apellido,
+      email,
+      password,
+      telefono
+    });
+
+    const resultado = usuario.toJSON();
+    delete resultado.password;
+
+    res.json(resultado);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 
 // Eliminar usuario
 export const eliminarUsuario = async (req, res) => {
-
   try {
-
     const usuario = await Usuario.findByPk(req.params.id);
 
     if (!usuario) {
@@ -98,15 +127,13 @@ export const eliminarUsuario = async (req, res) => {
     await usuario.destroy();
 
     res.json({
-      mensaje: "Usuario eliminado correctamente"
+      mensaje: "Usuario eliminado"
     });
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
+

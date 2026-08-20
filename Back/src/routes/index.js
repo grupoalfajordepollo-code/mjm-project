@@ -8,6 +8,10 @@ import carritoRoutes from './carritoRoutes.js';
 import itemxCarritoRoutes from "./itemxCarritoRoutes.js";
 import pagoRoutes from './pagoRoutes.js';
 import authRoutes from "./authRoutes.js";
+import domicilioRoutes from "./domicilioRoutes.js";
+import imagenesRoutes from "./imagenesRoutes.js";
+import itemxPedidoRoutes from "./itemxPedidoRoutes.js";
+import administradorRoutes from "./administradorRoutes.js";
 
 const router = Router();
 
@@ -42,6 +46,18 @@ router.use('/pagos', pagoRoutes);
 
 // Auth
 router.use("/auth", authRoutes);
+
+// Domicilios
+router.use("/domicilios", domicilioRoutes);
+
+// Imagenes
+router.use("/imagenes", imagenesRoutes);
+
+// ItemxPedidos
+router.use("/items-pedido", itemxPedidoRoutes);
+
+// Administrador
+router.use("/administradores", administradorRoutes);
 
 export default router;
 
