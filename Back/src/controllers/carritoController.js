@@ -1,40 +1,63 @@
 import Carrito from "../models/Carrito.js";
 import Usuario from "../models/Usuario.js";
+import ItemxCarrito from "../models/ItemxCarrito.js";
+import Producto from "../models/Producto.js";
 
 // Obtener todos los carritos
 export const obtenerCarritos = async (req, res) => {
   try {
-
     const carritos = await Carrito.findAll({
-      include: {
-        model: Usuario,
-        as: "usuario",
-        attributes: ["id", "nombre", "apellido", "email"]
-      }
+      include: [
+        {
+          model: Usuario,
+          as: "usuario",
+          attributes: ["id", "nombre", "apellido", "email"]
+        },
+        {
+          model: ItemxCarrito,
+          as: "items",
+          include: [
+            {
+              model: Producto,
+              as: "producto",
+              attributes: ["id", "nombre", "precio", "stock", "idImagen"]
+            }
+          ]
+        }
+      ]
     });
 
     res.json(carritos);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
 };
 
-// Obtener un carrito por ID
+// Obtener carrito por ID
 export const obtenerCarrito = async (req, res) => {
-
   try {
-
     const carrito = await Carrito.findByPk(req.params.id, {
-      include: {
-        model: Usuario,
-        as: "usuario",
-        attributes: ["id", "nombre", "apellido", "email"]
-      }
+      include: [
+        {
+          model: Usuario,
+          as: "usuario",
+          attributes: ["id", "nombre", "apellido", "email"]
+        },
+        {
+          model: ItemxCarrito,
+          as: "items",
+          include: [
+            {
+              model: Producto,
+              as: "producto",
+              attributes: ["id", "nombre", "precio", "stock", "idImagen"]
+            }
+          ]
+        }
+      ]
     });
 
     if (!carrito) {
@@ -46,21 +69,18 @@ export const obtenerCarrito = async (req, res) => {
     res.json(carrito);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 
 // Crear carrito
 export const crearCarrito = async (req, res) => {
-
   try {
+    const { idUsuario, fechaCreacion } = req.body;
 
-    const usuario = await Usuario.findByPk(req.body.idUsuario);
+    const usuario = await Usuario.findByPk(idUsuario);
 
     if (!usuario) {
       return res.status(404).json({
@@ -68,25 +88,23 @@ export const crearCarrito = async (req, res) => {
       });
     }
 
-    const carrito = await Carrito.create(req.body);
+    const carrito = await Carrito.create({
+      idUsuario,
+      fechaCreacion
+    });
 
     res.status(201).json(carrito);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 
 // Actualizar carrito
 export const actualizarCarrito = async (req, res) => {
-
   try {
-
     const carrito = await Carrito.findByPk(req.params.id);
 
     if (!carrito) {
@@ -96,7 +114,6 @@ export const actualizarCarrito = async (req, res) => {
     }
 
     if (req.body.idUsuario) {
-
       const usuario = await Usuario.findByPk(req.body.idUsuario);
 
       if (!usuario) {
@@ -104,7 +121,6 @@ export const actualizarCarrito = async (req, res) => {
           mensaje: "El usuario no existe"
         });
       }
-
     }
 
     await carrito.update(req.body);
@@ -112,20 +128,15 @@ export const actualizarCarrito = async (req, res) => {
     res.json(carrito);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 
 // Eliminar carrito
 export const eliminarCarrito = async (req, res) => {
-
   try {
-
     const carrito = await Carrito.findByPk(req.params.id);
 
     if (!carrito) {
@@ -137,16 +148,13 @@ export const eliminarCarrito = async (req, res) => {
     await carrito.destroy();
 
     res.json({
-      mensaje: "Carrito eliminado correctamente"
+      mensaje: "Carrito eliminado"
     });
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
-
 };
 

@@ -4,7 +4,6 @@ import Pedido from "../models/Pedido.js";
 // Obtener todos los pagos
 export const obtenerPagos = async (req, res) => {
   try {
-
     const pagos = await Pago.findAll({
       include: {
         model: Pedido,
@@ -15,18 +14,15 @@ export const obtenerPagos = async (req, res) => {
     res.json(pagos);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
 };
 
 // Obtener pago por ID
 export const obtenerPago = async (req, res) => {
   try {
-
     const pago = await Pago.findByPk(req.params.id, {
       include: {
         model: Pedido,
@@ -43,19 +39,24 @@ export const obtenerPago = async (req, res) => {
     res.json(pago);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
 };
 
 // Crear pago
 export const crearPago = async (req, res) => {
   try {
+    const {
+      idPedido,
+      metodoPago,
+      estadoPago,
+      fechaPago,
+      monto
+    } = req.body;
 
-    const pedido = await Pedido.findByPk(req.body.idPedido);
+    const pedido = await Pedido.findByPk(idPedido);
 
     if (!pedido) {
       return res.status(404).json({
@@ -63,23 +64,26 @@ export const crearPago = async (req, res) => {
       });
     }
 
-    const pago = await Pago.create(req.body);
+    const pago = await Pago.create({
+      idPedido,
+      metodoPago,
+      estadoPago,
+      fechaPago,
+      monto
+    });
 
     res.status(201).json(pago);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
 };
 
 // Actualizar pago
 export const actualizarPago = async (req, res) => {
   try {
-
     const pago = await Pago.findByPk(req.params.id);
 
     if (!pago) {
@@ -89,7 +93,6 @@ export const actualizarPago = async (req, res) => {
     }
 
     if (req.body.idPedido) {
-
       const pedido = await Pedido.findByPk(req.body.idPedido);
 
       if (!pedido) {
@@ -97,7 +100,6 @@ export const actualizarPago = async (req, res) => {
           mensaje: "El pedido no existe"
         });
       }
-
     }
 
     await pago.update(req.body);
@@ -105,18 +107,15 @@ export const actualizarPago = async (req, res) => {
     res.json(pago);
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
 };
 
 // Eliminar pago
 export const eliminarPago = async (req, res) => {
   try {
-
     const pago = await Pago.findByPk(req.params.id);
 
     if (!pago) {
@@ -128,15 +127,13 @@ export const eliminarPago = async (req, res) => {
     await pago.destroy();
 
     res.json({
-      mensaje: "Pago eliminado correctamente"
+      mensaje: "Pago eliminado"
     });
 
   } catch (error) {
-
     res.status(500).json({
       mensaje: error.message
     });
-
   }
 };
 

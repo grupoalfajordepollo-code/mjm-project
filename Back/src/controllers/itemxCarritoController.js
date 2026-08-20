@@ -2,21 +2,20 @@ import ItemxCarrito from "../models/ItemxCarrito.js";
 import Carrito from "../models/Carrito.js";
 import Producto from "../models/Producto.js";
 
-// Obtener todos
+// Obtener todos los items
 export const obtenerItems = async (req, res) => {
   try {
-
     const items = await ItemxCarrito.findAll({
       include: [
         {
           model: Carrito,
           as: "carrito",
-          attributes: ["id"]
+          attributes: ["id", "idUsuario"]
         },
         {
           model: Producto,
           as: "producto",
-          attributes: ["id", "nombre", "precio"]
+          attributes: ["id", "nombre", "precio", "stock", "idImagen"]
         }
       ]
     });
@@ -30,21 +29,20 @@ export const obtenerItems = async (req, res) => {
   }
 };
 
-// Obtener uno
+// Obtener item por ID
 export const obtenerItem = async (req, res) => {
   try {
-
     const item = await ItemxCarrito.findByPk(req.params.id, {
       include: [
         {
           model: Carrito,
           as: "carrito",
-          attributes: ["id"]
+          attributes: ["id", "idUsuario"]
         },
         {
           model: Producto,
           as: "producto",
-          attributes: ["id", "nombre", "precio"]
+          attributes: ["id", "nombre", "precio", "stock", "idImagen"]
         }
       ]
     });
@@ -64,12 +62,16 @@ export const obtenerItem = async (req, res) => {
   }
 };
 
-// Crear
+// Crear item
 export const crearItem = async (req, res) => {
-
   try {
+    const {
+      idCarrito,
+      idProducto,
+      cantidad
+    } = req.body;
 
-    const carrito = await Carrito.findByPk(req.body.idCarrito);
+    const carrito = await Carrito.findByPk(idCarrito);
 
     if (!carrito) {
       return res.status(404).json({
@@ -77,7 +79,7 @@ export const crearItem = async (req, res) => {
       });
     }
 
-    const producto = await Producto.findByPk(req.body.idProducto);
+    const producto = await Producto.findByPk(idProducto);
 
     if (!producto) {
       return res.status(404).json({
@@ -85,7 +87,16 @@ export const crearItem = async (req, res) => {
       });
     }
 
-    const item = await ItemxCarrito.create(req.body);
+    const precioUnitario = producto.precio;
+    const subtotal = Number(precioUnitario) * Number(cantidad);
+
+    const item = await ItemxCarrito.create({
+      idCarrito,
+      idProducto,
+      cantidad,
+      precioUnitario,
+      subtotal
+    });
 
     res.status(201).json(item);
 
@@ -94,14 +105,11 @@ export const crearItem = async (req, res) => {
       mensaje: error.message
     });
   }
-
 };
 
-// Actualizar
+// Actualizar item
 export const actualizarItem = async (req, res) => {
-
   try {
-
     const item = await ItemxCarrito.findByPk(req.params.id);
 
     if (!item) {
@@ -110,7 +118,27 @@ export const actualizarItem = async (req, res) => {
       });
     }
 
-    await item.update(req.body);
+    const producto = await Producto.findByPk(
+      req.body.idProducto || item.idProducto
+    );
+
+    if (!producto) {
+      return res.status(404).json({
+        mensaje: "El producto no existe"
+      });
+    }
+
+    const cantidad = req.body.cantidad ?? item.cantidad;
+    const precioUnitario = producto.precio;
+    const subtotal = Number(precioUnitario) * Number(cantidad);
+
+    await item.update({
+      idCarrito: req.body.idCarrito ?? item.idCarrito,
+      idProducto: req.body.idProducto ?? item.idProducto,
+      cantidad,
+      precioUnitario,
+      subtotal
+    });
 
     res.json(item);
 
@@ -119,14 +147,11 @@ export const actualizarItem = async (req, res) => {
       mensaje: error.message
     });
   }
-
 };
 
-// Eliminar
+// Eliminar item
 export const eliminarItem = async (req, res) => {
-
   try {
-
     const item = await ItemxCarrito.findByPk(req.params.id);
 
     if (!item) {
@@ -138,7 +163,7 @@ export const eliminarItem = async (req, res) => {
     await item.destroy();
 
     res.json({
-      mensaje: "Item eliminado correctamente"
+      mensaje: "Item eliminado"
     });
 
   } catch (error) {
@@ -146,6 +171,5 @@ export const eliminarItem = async (req, res) => {
       mensaje: error.message
     });
   }
-
 };
 
