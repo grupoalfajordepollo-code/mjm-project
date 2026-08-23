@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect } from "react";
 import {
   login as loginService,
@@ -68,7 +69,7 @@ export const AuthProvider = ({ children }) => {
       const mensaje =
         err.response?.data?.mensaje || "Error al iniciar sesion";
       setError(mensaje);
-      throw new Error(mensaje);
+      throw new Error(mensaje, { cause: err });
     } finally {
       setLoading(false);
     }
@@ -90,7 +91,7 @@ export const AuthProvider = ({ children }) => {
       const mensaje =
         err.response?.data?.mensaje || "Error al registrar usuario";
       setError(mensaje);
-      throw new Error(mensaje);
+      throw new Error(mensaje, { cause: err });
     } finally {
       setLoading(false);
     }
