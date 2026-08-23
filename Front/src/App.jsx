@@ -1,18 +1,27 @@
-import Categories from "./components/Categories"
-import Footer from "./components/Footer"
-import Header from "./components/Header"
-import Hero from "./components/Hero"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Home from "./components/Home";
+import LoginForm from "./components/LoginForm";
+import RegisterForm from "./components/RegisterForm";
+import Unauthorized401 from "./components/Unauthorized401";
 
 function App() {
-
   return (
-    <>
-      <Header></Header>
-      <Hero></Hero>
-      <Categories></Categories>
-      <Footer></Footer>
-    </>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/registro" element={<RegisterForm />} />
+          <Route path="/401" element={<Unauthorized401 />} />
+        </Routes>
+        <Footer />
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
