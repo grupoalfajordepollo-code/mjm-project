@@ -1,5 +1,10 @@
+import HeroImg from "../assets/MJMI/Home/Hero.webp";
+
 
 const Hero = () => {
+
+  
+
   return (
     <section className="w-full bg-white font-space relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
@@ -38,7 +43,7 @@ const Hero = () => {
             <div className="aspect-4/5 sm:aspect-square lg:aspect-4/5 w-full rounded-4xl overflow-hidden bg-[#1a1c1e] shadow-2xl relative">
               
               <img 
-                src="../assets/MJMI/Home/Hero.webp" 
+                src={HeroImg}
                 alt="Impresora 3D en funcionamiento" 
                 className="w-full h-full object-cover"
               />
