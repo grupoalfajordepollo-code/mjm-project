@@ -10,7 +10,7 @@ const startServer = async () => {
     // Paso B: Crear tablas (si no existen)
     // Con { force: true } se eliminan las tablas y se crean de nuevo
     // Con { alter: true } se modifican las tablas existentes
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ force: true });
     console.log('✅ Tablas sincronizadas');
 
     // Paso C: Abrir el puerto
