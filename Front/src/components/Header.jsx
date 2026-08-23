@@ -1,23 +1,33 @@
 import { Search, ShoppingCart, CircleUserRound } from 'lucide-react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from "../context/AuthContext";
 
 const Header = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <header className="w-full bg-white border-b border-gray-100 font-space">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
 
         <div className="flex items-center gap-8">
 
-          <a href="#" className="text-2xl font-black tracking-wide text-[#B02F00]">
+          <Link to="/" className="text-2xl font-black tracking-wide text-[#B02F00]">
             MJM 3D
-          </a>
+          </Link>
 
           <nav className="hidden sm:flex items-center gap-6">
-            <a 
-              href="#" 
+            <Link 
+              to="/" 
               className="text-[#B02F00] font-bold text-sm border-b-2 border-[#B02F00] pb-1"
             >
               Home
-            </a>
+            </Link>
           </nav>
         </div>
 
@@ -33,12 +43,23 @@ const Header = () => {
             />
           </div>
 
-          <a 
-            href="#" 
-            className="hidden md:inline-block text-sm font-bold text-[#B02F00] hover:opacity-80 transition-opacity whitespace-nowrap"
-          >
-            Ingresar / Registrarse
-          </a>
+          {user ? (
+            <div className="flex items-center gap-4">
+              <span className="hidden sm:inline-block text-sm text-gray-700">
+                Hola, <strong>{user.nombre}</strong>
+              </span>
+              <button 
+                onClick={handleLogout}
+                className="text-sm font-bold text-[#B02F00] hover:opacity-80 transition-opacity whitespace-nowrap cursor-pointer"
+              >
+                Cerrar Sesión
+              </button>
+            </div>
+          ) : (
+            <Link to="/login" className="text-sm font-bold text-[#B02F00] hover:opacity-80 transition-opacity whitespace-nowrap">
+              Iniciar Sesion / Registrarse
+            </Link>
+          )}
 
           <div className="flex items-center gap-3 text-gray-700">
             <button 
@@ -49,13 +70,13 @@ const Header = () => {
               <ShoppingCart className="h-5 w-5" strokeWidth={1.8} />
             </button>
 
-            <button 
-              type="button" 
+            <Link 
+              to={user ? "/perfil" : "/login"}
               className="p-1.5 hover:text-[#B02F00] cursor-pointer transition-colors rounded-full hover:bg-gray-100"
               aria-label="Cuenta de usuario"
             >
               <CircleUserRound className="h-5 w-5" strokeWidth={1.8} />
-            </button>
+            </Link>
           </div>
 
         </div>
