@@ -23,10 +23,18 @@ export default async function seedItemsPedido() {
 
     const subtotal = Number(producto.precio) * i.cantidad;
 
-    const [instance, created] = await ItemxPedido.findOrCreate({
-      where: { idPedido: pedido.id, idProducto: producto.id },
-      defaults: { idPedido: pedido.id, idProducto: producto.id, cantidad: i.cantidad, precioUnitario: producto.precio, subtotal },
-    });
-    console.log(`  ${created ? 'INSERTADO' : 'YA EXISTE'}: ItemPedido ${i.producto} x${i.cantidad} (${i.email})`);
+    const hasProducto = await pedido.hasProducto(producto);
+    if (!hasProducto) {
+      await pedido.addProducto(producto, {
+        through: {
+          cantidad: i.cantidad,
+          precioUnitario: producto.precio,
+          subtotal
+        }
+      });
+      console.log(`  INSERTADO: ItemPedido ${i.producto} x${i.cantidad} (${i.email})`);
+    } else {
+      console.log(`  YA EXISTE: ItemPedido ${i.producto} x${i.cantidad} (${i.email})`);
+    }
   }
 }
