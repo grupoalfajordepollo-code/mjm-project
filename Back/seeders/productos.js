@@ -17,9 +17,12 @@ export default async function seedProductos() {
     const cat = await Categoria.findOne({ where: { nombre: p.categoria } });
     if (!cat) { console.log(`  SKIP: Categoría ${p.categoria} no encontrada para producto ${p.nombre}`); continue; }
 
+    const admin = await (await import('../src/models/Administrador.js')).default.findOne({ where: { email: 'admin@mail.com' } });
+    if (!admin) { console.log(`  SKIP: Administrador no encontrado para producto ${p.nombre}`); continue; }
+
     const [instance, created] = await Producto.findOrCreate({
       where: { nombre: p.nombre },
-      defaults: { nombre: p.nombre, descripcion: p.descripcion, precio: p.precio, stock: p.stock, idCategoria: cat.id },
+      defaults: { nombre: p.nombre, descripcion: p.descripcion, precio: p.precio, stock: p.stock, idCategoria: cat.id, idAdministrador: admin.id, fechaAdmin: new Date() },
     });
     console.log(`  ${created ? 'INSERTADO' : 'YA EXISTE'}: Producto ${instance.nombre}`);
   }
