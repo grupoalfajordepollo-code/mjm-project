@@ -4,7 +4,6 @@ import '../src/models/index.js';
 import seedUsuarios from './usuarios.js';
 import seedAdministradores from './administradores.js';
 import seedCategorias from './categorias.js';
-import seedTelefonos from './telefonos.js';
 import seedDomicilios from './domicilios.js';
 import seedProductos from './productos.js';
 import seedCarritos from './carritos.js';
@@ -17,7 +16,6 @@ const seeders = [
   { name: 'Usuarios',        fn: seedUsuarios },
   { name: 'Administradores', fn: seedAdministradores },
   { name: 'Categorías',      fn: seedCategorias },
-  { name: 'Teléfonos',       fn: seedTelefonos },
   { name: 'Domicilios',      fn: seedDomicilios },
   { name: 'Productos',       fn: seedProductos },
   { name: 'Carritos',        fn: seedCarritos },

@@ -104,6 +104,19 @@ ItemxCarrito.belongsTo(Producto, {
   as: "producto",
 });
 
+Carrito.belongsToMany(Producto, {
+  through: ItemxCarrito,
+  foreignKey: "idCarrito",
+  otherKey: "idProducto",
+  as: "productos"
+});
+
+Producto.belongsToMany(Carrito, {
+  through: ItemxCarrito,
+  foreignKey: "idProducto",
+  otherKey: "idCarrito",
+  as: "carritos"
+});
 
 // Relaciones de Pedido
 Pedido.hasMany(ItemxPedido, {
@@ -124,6 +137,20 @@ Producto.hasMany(ItemxPedido, {
 ItemxPedido.belongsTo(Producto, {
   foreignKey: "idProducto",
   as: "producto",
+});
+
+Pedido.belongsToMany(Producto, {
+  through: ItemxPedido,
+  foreignKey: "idPedido",
+  otherKey: "idProducto",
+  as: "productos"
+});
+
+Producto.belongsToMany(Pedido, {
+  through: ItemxPedido,
+  foreignKey: "idProducto",
+  otherKey: "idPedido",
+  as: "pedidos"
 });
 
 
