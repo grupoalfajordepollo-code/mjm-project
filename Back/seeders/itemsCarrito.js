@@ -22,10 +22,18 @@ export default async function seedItemsCarrito() {
 
     const subtotal = Number(producto.precio) * i.cantidad;
 
-    const [instance, created] = await ItemxCarrito.findOrCreate({
-      where: { idCarrito: carrito.id, idProducto: producto.id },
-      defaults: { idCarrito: carrito.id, idProducto: producto.id, cantidad: i.cantidad, precioUnitario: producto.precio, subtotal },
-    });
-    console.log(`  ${created ? 'INSERTADO' : 'YA EXISTE'}: ItemCarrito ${i.producto} x${i.cantidad} (${i.email})`);
+    const hasProducto = await carrito.hasProducto(producto);
+    if (!hasProducto) {
+      await carrito.addProducto(producto, {
+        through: {
+          cantidad: i.cantidad,
+          precioUnitario: producto.precio,
+          subtotal
+        }
+      });
+      console.log(`  INSERTADO: ItemCarrito ${i.producto} x${i.cantidad} (${i.email})`);
+    } else {
+      console.log(`  YA EXISTE: ItemCarrito ${i.producto} x${i.cantidad} (${i.email})`);
+    }
   }
 }
