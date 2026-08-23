@@ -1,12 +1,15 @@
+import Categories from "./components/Categories"
 import Footer from "./components/Footer"
 import Header from "./components/Header"
-import LoginForm from "./components/LoginForm"
+import Hero from "./components/Hero"
+
 function App() {
 
   return (
     <>
       <Header></Header>
-      <LoginForm></LoginForm>
+      <Hero></Hero>
+      <Categories></Categories>
       <Footer></Footer>
     </>
   )
