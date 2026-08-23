@@ -1,5 +1,9 @@
 import  { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
+import Product1 from "../assets/MJMI/Home/Product1.webp";
+import Product2 from "../assets/MJMI/Home/Product2.webp";
+import Product3 from "../assets/MJMI/Home/Product3.webp";
+import Product4 from "../assets/MJMI/Home/Product4.webp";
 
 const productos = [
   {
@@ -9,7 +13,7 @@ const productos = [
     description: "Estructura modular diseñada para espacios de trabajo modernos que...",
     price: "$4.500",
     status: "Disponible",
-    image: "/ruta-organizador.jpg",
+    image: Product1,
   },
   {
     id: 2,
@@ -18,7 +22,7 @@ const productos = [
     description: "Pieza decorativa basada en patrones matemáticos naturales...",
     price: "$3.200",
     status: "¡Últimas unidades!",
-    image: "/ruta-florero.jpg",
+    image: Product2,
   },
   {
     id: 3,
@@ -27,7 +31,7 @@ const productos = [
     description: "Figura de acción con más de 40 puntos de articulación impresa en...",
     price: "$5.800",
     status: "Disponible",
-    image: "/ruta-dragon.jpg",
+    image: Product3,
   },
   {
     id: 4,
@@ -36,7 +40,7 @@ const productos = [
     description: "Carcasa premium para teclado mecánico, optimizada para...",
     price: "$12.000",
     status: "Agotado",
-    image: "/ruta-gabinete.jpg",
+    image: Product4,
   }
 ];
 

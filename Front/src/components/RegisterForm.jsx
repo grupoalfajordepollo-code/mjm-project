@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import RegisterImage from "../assets/MJMI/Registro/Registro.webp";
 
 const RegisterForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -43,8 +44,9 @@ const RegisterForm = () => {
 
       <div className="flex w-full max-w-250 bg-white rounded-2xl shadow-[0_4px_25px_-5px_rgba(0,0,0,0.1)] border border-[#e6d5cc] overflow-hidden">
         <div className="hidden md:flex flex-col justify-end w-1/2 bg-[#1a1c1e] relative">
-          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10"></div>
-          <div className="relative z-20 p-10 text-white">
+          <div className="absolute inset-0 bg-linear-to-t from-black/80 via-black/20 to-transparent z-10">
+            <img src={RegisterImage} alt="Register" className="w-full h-full object-cover" />
+          </div>          <div className="relative z-20 p-10 text-white">
             <h2 className="text-3xl font-bold mb-3">Eleva tu Creatividad 3D</h2>
             <p className="text-gray-300 text-sm leading-relaxed">
               Únete a la comunidad líder de manufactura aditiva y diseño técnico.
