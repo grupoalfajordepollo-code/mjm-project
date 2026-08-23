@@ -10,6 +10,8 @@ dev: Rama de desarrollo. Aquí integramos las tareas terminadas.
 
 feature/HU-[ID]: Ramas personales. Cada tarea debe tener su rama identificada con el ID de la Historia de Usuario (ej: feature/HU-101, feature/HU-102).
 
+fix/[nombre]: Ramas de corrección. Se utilizan para solucionar errores (bugs) o problemas técnicos en el código (ej: fix/relationship, fix/login-error).
+
 2. Flujo de Trabajo (Git Workflow)
 
 Cada vez que vayas a trabajar en una tarea:
