@@ -34,8 +34,8 @@ const RegisterForm = () => {
     try {
       await register({ nombre, apellido, email, password });
       navigate("/login");
-    } catch {
-      // el error ya se setea en el context
+    } catch (err) {
+    setError(err.message);
     }
   };
 
