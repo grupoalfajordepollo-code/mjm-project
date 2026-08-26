@@ -30,6 +30,13 @@ const Usuario = sequelize.define(
     password: {
       type: DataTypes.STRING(255),
       allowNull: false,
+
+      validate: {
+        is: {
+          args: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[^A-Za-z0-9]).{6,}$/,
+          msg: "La contraseña debe tener al menos 6 caracteres, una mayúscula, una minúscula y un carácter especial",
+        },
+      },
     },
 
     fechaRegistro: {

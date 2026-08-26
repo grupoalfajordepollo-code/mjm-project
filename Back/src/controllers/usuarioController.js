@@ -68,6 +68,23 @@ export const crearUsuario = async (req, res) => {
     res.status(201).json(resultado);
 
   } catch (error) {
+
+    // Error de validación de Sequelize
+    if (error.name === "SequelizeValidationError") {
+      return res.status(400).json({
+        mensaje:
+          error.errors?.[0]?.message ||
+          "Los datos ingresados no son válidos"
+      });
+    }
+
+    // Email duplicado
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(400).json({
+        mensaje: "El email ingresado ya se encuentra registrado"
+      });
+    }
+
     res.status(500).json({
       mensaje: error.message
     });
@@ -107,6 +124,23 @@ export const actualizarUsuario = async (req, res) => {
     res.json(resultado);
 
   } catch (error) {
+
+    // Error de validación de Sequelize
+    if (error.name === "SequelizeValidationError") {
+      return res.status(400).json({
+        mensaje:
+          error.errors?.[0]?.message ||
+          "Los datos ingresados no son válidos"
+      });
+    }
+
+    // Email duplicado
+    if (error.name === "SequelizeUniqueConstraintError") {
+      return res.status(400).json({
+        mensaje: "El email ingresado ya se encuentra registrado"
+      });
+    }
+
     res.status(500).json({
       mensaje: error.message
     });
