@@ -1,8 +1,8 @@
-import HeroImg from "../assets/MJMI/Home/Hero.webp";
-
+import { getAsset } from "../utils/getAssetsUrl";
 
 const Hero = () => {
 
+  const HeroImgUrl = getAsset("MJMI/Home/Hero.webp");
   
 
   return (
@@ -43,7 +43,7 @@ const Hero = () => {
             <div className="aspect-4/5 sm:aspect-square lg:aspect-4/5 w-full rounded-4xl overflow-hidden bg-[#1a1c1e] shadow-2xl relative">
               
               <img 
-                src={HeroImg}
+                src={HeroImgUrl}
                 alt="Impresora 3D en funcionamiento" 
                 className="w-full h-full object-cover"
               />
