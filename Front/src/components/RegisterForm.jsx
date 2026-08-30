@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import RegisterImage from "../assets/MJMI/Registro/Registro.webp";
+import { getAsset } from "../utils/getAssetsUrl";
 
 const RegisterForm = () => {
+  const RegisterImage = getAsset("MJMI/Registro/Registro.webp");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [nombre, setNombre] = useState("");
