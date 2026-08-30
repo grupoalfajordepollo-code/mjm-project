@@ -1,10 +1,8 @@
-import  { useState } from 'react';
+import { useState } from 'react';
 import { ShoppingCart } from 'lucide-react';
-import Product1 from "../assets/MJMI/Home/Product1.webp";
-import Product2 from "../assets/MJMI/Home/Product2.webp";
-import Product3 from "../assets/MJMI/Home/Product3.webp";
-import Product4 from "../assets/MJMI/Home/Product4.webp";
+import { useAssets } from '../context/AssetsContext';
 
+// Guardamos las rutas relativas locales en string
 const productos = [
   {
     id: 1,
@@ -13,7 +11,7 @@ const productos = [
     description: "Estructura modular diseñada para espacios de trabajo modernos que...",
     price: "$4.500",
     status: "Disponible",
-    image: Product1,
+    imagePath: "MJMI/Home/Product1.webp",
   },
   {
     id: 2,
@@ -22,7 +20,7 @@ const productos = [
     description: "Pieza decorativa basada en patrones matemáticos naturales...",
     price: "$3.200",
     status: "¡Últimas unidades!",
-    image: Product2,
+    imagePath: "MJMI/Home/Product2.webp",
   },
   {
     id: 3,
@@ -31,7 +29,7 @@ const productos = [
     description: "Figura de acción con más de 40 puntos de articulación impresa en...",
     price: "$5.800",
     status: "Disponible",
-    image: Product3,
+    imagePath: "MJMI/Home/Product3.webp",
   },
   {
     id: 4,
@@ -40,7 +38,7 @@ const productos = [
     description: "Carcasa premium para teclado mecánico, optimizada para...",
     price: "$12.000",
     status: "Agotado",
-    image: Product4,
+    imagePath: "MJMI/Home/Product4.webp",
   }
 ];
 
@@ -48,6 +46,7 @@ const categorias = ["Todas", "Branding", "Bazar", "Juguetes", "Hobbie"];
 
 const Categories = () => {
   const [activeCategory, setActiveCategory] = useState("Todas");
+  const { getAsset, loading } = useAssets(); // Extraemos el helper y el estado de carga
 
   const getBadgeStyle = (status) => {
     switch (status) {
@@ -95,59 +94,67 @@ const Categories = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          {productos.map((prod) => (
-            <article 
-              key={prod.id} 
-              className="bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col transition-transform hover:-translate-y-1"
-            >
-              
-              <div className="relative aspect-4/3 bg-gray-100 overflow-hidden">
-                <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full z-10 ${getBadgeStyle(prod.status)}`}>
-                  {prod.status}
+          {productos.map((prod) => {
+            const imgUrl = getAsset(prod.imagePath);
+
+            return (
+              <article 
+                key={prod.id} 
+                className="bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col transition-transform hover:-translate-y-1"
+              >
+                
+                <div className="relative aspect-4/3 bg-gray-100 overflow-hidden">
+                  <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full z-10 ${getBadgeStyle(prod.status)}`}>
+                    {prod.status}
+                  </div>
+                  
+                  {loading ? (
+                    <div className="w-full h-full bg-gray-200 animate-pulse" />
+                  ) : (
+                    <img 
+                      src={imgUrl || null} 
+                      alt={prod.title} 
+                      className="w-full h-full object-cover"
+                    />
+                  )}
                 </div>
-                
-                <img 
-                  src={prod.image} 
-                  alt={prod.title} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
 
-              <div className="p-5 flex flex-col grow">
-                
-                <span className="text-[#B02F00] text-[10px] font-bold uppercase tracking-widest mb-1.5">
-                  {prod.category}
-                </span>
-                
-                <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
-                  {prod.title}
-                </h3>
-                
-                <p className="text-gray-500 text-xs leading-relaxed mb-6 line-clamp-2 grow">
-                  {prod.description}
-                </p>
-
-                <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
-                  <span className="text-xl font-bold text-gray-900">
-                    {prod.price}
+                <div className="p-5 flex flex-col grow">
+                  
+                  <span className="text-[#B02F00] text-[10px] font-bold uppercase tracking-widest mb-1.5">
+                    {prod.category}
                   </span>
                   
-                  <button 
-                    disabled={prod.status === "Agotado"}
-                    className={`p-2 rounded-lg transition-colors ${
-                      prod.status === "Agotado"
-                        ? "bg-gray-50 text-gray-300 cursor-not-allowed"
-                        : "bg-[#fff5f2] text-[#B02F00] hover:bg-[#ffece6]"
-                    }`}
-                    aria-label="Agregar al carrito"
-                  >
-                    <ShoppingCart size={20} strokeWidth={2} />
-                  </button>
-                </div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
+                    {prod.title}
+                  </h3>
+                  
+                  <p className="text-gray-500 text-xs leading-relaxed mb-6 line-clamp-2 grow">
+                    {prod.description}
+                  </p>
 
-              </div>
-            </article>
-          ))}
+                  <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
+                    <span className="text-xl font-bold text-gray-900">
+                      {prod.price}
+                    </span>
+                    
+                    <button 
+                      disabled={prod.status === "Agotado"}
+                      className={`p-2 rounded-lg transition-colors ${
+                        prod.status === "Agotado"
+                          ? "bg-gray-50 text-gray-300 cursor-not-allowed"
+                          : "bg-[#fff5f2] text-[#B02F00] hover:bg-[#ffece6]"
+                      }`}
+                      aria-label="Agregar al carrito"
+                    >
+                      <ShoppingCart size={20} strokeWidth={2} />
+                    </button>
+                  </div>
+
+                </div>
+              </article>
+            );
+          })}
 
         </div>
       </div>

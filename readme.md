@@ -1,3 +1,19 @@
+## 🖼️ Manejo de Assets Estáticos (OCI Object Storage)
+
+Actualmente, el bucket de Oracle Cloud Infrastructure (OCI) está configurado como **PÚBLICO** para agilizar el desarrollo de la interfaz de usuario.
+
+### Configuración Actual
+* **Visibilidad:** Public (Object Read).
+* **Consumo Frontend:** Las imágenes se resuelven de forma síncrona mediante la función utilitaria `getAsset()` usando la URL base pública definida en `VITE_OCI_PUBLIC_URL`.
+* **Carga Masiva:** Se utiliza el script `Back/scripts/uploadAssets.js` (idempotente) para sincronizar los assets locales hacia OCI.
+
+### ⚠️ Cambio de Visibilidad a PRIVADO (Pasos a futuro)
+Si se decide cambiar la visibilidad del bucket a **Private**:
+1. Solicitar al administrador OCI que cambie la visibilidad del bucket a `Private` en la consola de OCI.
+2. Habilitar el endpoint de Express (`POST /api/upload/get-read-urls-batch`).
+3. Reimplementar el `AssetsContext` en el Frontend para solicitar y almacenar en `localStorage` las URLs firmadas temporales (PARs).
+
+
 Manual de Flujo de Trabajo - MJM 3D
 
 Para mantener el orden y evitar conflictos, nuestro trabajo está sincronizado con nuestro tablero en KanbanFlow.
@@ -49,3 +65,5 @@ Antes de mergear: Verifica que el código cumple la definición de "hecho" de tu
 4. Gestión de la demo
 
 Cuando la rama dev esté estable, un administrador hará un Pull Request hacia main.
+
+
