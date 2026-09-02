@@ -43,7 +43,7 @@ const AdminSidebar = () => {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold transition-all duration-200 ${
+              className={`cursor-pointer w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold transition-all duration-200 ${
                 isActive 
                   ? 'bg-[#B02F00] text-white shadow-md' // TU MODIFICACIÓN: Fondo naranja, letra blanca
                   : 'text-[#899fb5] hover:bg-[#2d3137] hover:text-white' // Estado inactivo
@@ -58,14 +58,14 @@ const AdminSidebar = () => {
 
       <div className="px-4 mb-4 space-y-1.5">
         <button 
-          className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold text-[#899fb5] hover:bg-[#2d3137] hover:text-white transition-all duration-200"
+          className="cursor-pointer w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold text-[#899fb5] hover:bg-[#2d3137] hover:text-white transition-all duration-200"
         >
           <Settings size={20} strokeWidth={2} />
           <span className="text-sm">Configuración</span>
         </button>
         
         <button 
-          className="w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold text-[#899fb5] hover:bg-[#2d3137] hover:text-white transition-all duration-200"
+          className="cursor-pointer w-full flex items-center gap-3.5 px-4 py-3.5 rounded-xl font-bold text-[#899fb5] hover:bg-[#2d3137] hover:text-white transition-all duration-200"
         >
           <LogOut size={20} strokeWidth={2} />
           <span className="text-sm">Cerrar Sesión</span>

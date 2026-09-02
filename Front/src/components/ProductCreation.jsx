@@ -48,12 +48,12 @@ const ProductCreation = ({ setVistaActiva }) => {
           </div>
           
           <div className="flex items-center gap-3">
-            <button onClick={() => setVistaActiva('tabla')} className="px-6 py-2.5 bg-white border-2 border-[#e6d5cc] text-gray-700 text-sm font-bold rounded-lg hover:bg-gray-50 transition-colors">
+            <button onClick={() => setVistaActiva('tabla')} className="cursor-pointer px-6 py-2.5 bg-white border-2 border-[#e6d5cc] text-gray-700 text-sm font-bold rounded-lg hover:bg-gray-50 transition-colors">
               Descartar
             </button>
             <button 
               onClick={handleSave}
-              className="px-6 py-2.5 bg-[#B02F00] hover:bg-[#8a2500] text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
+              className="cursor-pointer px-6 py-2.5 bg-[#B02F00] hover:bg-[#8a2500] text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
             >
               Guardar Cambios
             </button>
