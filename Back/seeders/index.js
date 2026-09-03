@@ -11,6 +11,7 @@ import seedItemsCarrito from './itemsCarrito.js';
 import seedPedidos from './pedidos.js';
 import seedItemsPedido from './itemsPedido.js';
 import seedPagos from './pagos.js';
+import seedImagenes from './imagenes.js';
 
 const seeders = [
   { name: 'Usuarios',        fn: seedUsuarios },
@@ -18,6 +19,7 @@ const seeders = [
   { name: 'Categorías',      fn: seedCategorias },
   { name: 'Domicilios',      fn: seedDomicilios },
   { name: 'Productos',       fn: seedProductos },
+  { name: 'Imágenes',        fn: seedImagenes },
   { name: 'Carritos',        fn: seedCarritos },
   { name: 'ItemsCarrito',    fn: seedItemsCarrito },
   { name: 'Pedidos',         fn: seedPedidos },

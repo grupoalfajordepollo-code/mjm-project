@@ -1,15 +1,16 @@
 import Producto from '../src/models/Producto.js';
 import Categoria from '../src/models/Categoria.js';
+import Administrador from '../src/models/Administrador.js';
 
 const productos = [
-  { nombre: 'Figura de dragón', categoria: 'Impresión 3D', precio: 2500, stock: 10, descripcion: 'Figura decorativa de dragón en PLA' },
-  { nombre: 'Estuche para celular', categoria: 'Impresión 3D', precio: 1800, stock: 25, descripcion: 'Estuche protector para celular genérico' },
-  { nombre: 'Filamento PLA 1kg', categoria: 'Filamento', precio: 3200, stock: 50, descripcion: 'Rollo de PLA 1.75mm color negro' },
-  { nombre: 'Filamento PETG 1kg', categoria: 'Filamento', precio: 3800, stock: 30, descripcion: 'Rollo de PETG 1.75mm transparente' },
-  { nombre: 'Boquilla 0.4mm', categoria: 'Repuestos', precio: 800, stock: 100, descripcion: 'Boquilla de brass para hotend estándar' },
-  { nombre: 'Correa GT2', categoria: 'Repuestos', precio: 450, stock: 40, descripcion: 'Correa dentada GT2 6mm' },
-  { nombre: 'Base de cama adhesiva', categoria: 'Accesorios', precio: 1200, stock: 20, descripcion: 'Superficie adhesiva para cama de impresión' },
-  { nombre: 'Pinza de calibración', categoria: 'Accesorios', precio: 600, stock: 35, descripcion: 'Pinza metálica para nivelar la cama' },
+  { nombre: 'Organizador Apex', categoria: 'branding', precio: 4500, stock: 145, descripcion: 'Organizador de escritorio impreso en 3D' },
+  { nombre: 'Engranaje Helicoidal Pro-3', categoria: 'hobbie', precio: 1250.50, stock: 8, descripcion: 'Engranaje helicoidal de alta precisión' },
+  { nombre: 'Florero Voronoi', categoria: 'bazar', precio: 3200, stock: 50, descripcion: 'Florero decorativo con estructura voronoi' },
+  { nombre: 'Gabinete MK-Z', categoria: 'hobbie', precio: 12000, stock: 42, descripcion: 'Gabinete para electrónica personalizado' },
+  { nombre: 'Dragón Articulado', categoria: 'juguetes', precio: 5800, stock: 12, descripcion: 'Figura de dragón con articulaciones móviles' },
+  { nombre: 'Soporte Monitor VESA', categoria: 'branding', precio: 8500, stock: 35, descripcion: 'Soporte adjustable para monitores VESA' },
+  { nombre: 'Lámpara Lunar 3D', categoria: 'bazar', precio: 6200, stock: 3, descripcion: 'Lámpara con forma de luna en PLA' },
+  { nombre: 'Kit Engranajes Básicos', categoria: 'hobbie', precio: 2100, stock: 150, descripcion: 'Kit de engranajes para proyectos de ingeniería' },
 ];
 
 export default async function seedProductos() {
@@ -17,7 +18,7 @@ export default async function seedProductos() {
     const cat = await Categoria.findOne({ where: { nombre: p.categoria } });
     if (!cat) { console.log(`  SKIP: Categoría ${p.categoria} no encontrada para producto ${p.nombre}`); continue; }
 
-    const admin = await (await import('../src/models/Administrador.js')).default.findOne({ where: { email: 'admin@mail.com' } });
+    const admin = await Administrador.findOne({ where: { email: 'admin@mail.com' } });
     if (!admin) { console.log(`  SKIP: Administrador no encontrado para producto ${p.nombre}`); continue; }
 
     const [instance, created] = await Producto.findOrCreate({

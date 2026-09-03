@@ -1,10 +1,10 @@
 import Categoria from '../src/models/Categoria.js';
 
 const categorias = [
-  { nombre: 'Impresión 3D', descripcion: 'Objetos impresos en 3D' },
-  { nombre: 'Filamento', descripcion: 'Rollos de filamento para impresión' },
-  { nombre: 'Repuestos', descripcion: 'Repuestos y componentes' },
-  { nombre: 'Accesorios', descripcion: 'Accesorios varios' },
+  { nombre: 'branding', descripcion: 'Productos de marca y promoción' },
+  { nombre: 'bazar', descripcion: 'Artículos para el hogar y decoración' },
+  { nombre: 'juguetes', descripcion: 'Juguetes y figuras decorativas' },
+  { nombre: 'hobbie', descripcion: 'Repuestos, accesorios y componentes' },
 ];
 
 export default async function seedCategorias() {
