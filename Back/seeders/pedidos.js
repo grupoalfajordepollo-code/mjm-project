@@ -2,9 +2,9 @@ import Pedido from '../src/models/Pedido.js';
 import Usuario from '../src/models/Usuario.js';
 
 const pedidos = [
-  { email: 'juan@mail.com', total: 8200, estado: 'Entregado' },
-  { email: 'maria@mail.com', total: 5400, estado: 'Enviado' },
-  { email: 'carlos@mail.com', total: 3200, estado: 'Pendiente' },
+  { email: 'juan@mail.com', total: 11100, estado: 'Entregado' },
+  { email: 'maria@mail.com', total: 9600, estado: 'Enviado' },
+  { email: 'carlos@mail.com', total: 5800, estado: 'Pendiente' },
 ];
 
 export default async function seedPedidos() {

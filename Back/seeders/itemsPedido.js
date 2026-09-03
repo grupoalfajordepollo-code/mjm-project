@@ -4,10 +4,10 @@ import Producto from '../src/models/Producto.js';
 import Usuario from '../src/models/Usuario.js';
 
 const items = [
-  { email: 'juan@mail.com', totalPedido: 8200, producto: 'Figura de dragón', cantidad: 2 },
-  { email: 'juan@mail.com', totalPedido: 8200, producto: 'Filamento PLA 1kg', cantidad: 1 },
-  { email: 'maria@mail.com', totalPedido: 5400, producto: 'Estuche para celular', cantidad: 3 },
-  { email: 'carlos@mail.com', totalPedido: 3200, producto: 'Filamento PETG 1kg', cantidad: 1 },
+  { email: 'juan@mail.com', totalPedido: 8200, producto: 'Organizador Apex', cantidad: 2 },
+  { email: 'juan@mail.com', totalPedido: 8200, producto: 'Kit Engranajes Básicos', cantidad: 1 },
+  { email: 'maria@mail.com', totalPedido: 5400, producto: 'Florero Voronoi', cantidad: 3 },
+  { email: 'carlos@mail.com', totalPedido: 3200, producto: 'Dragón Articulado', cantidad: 1 },
 ];
 
 export default async function seedItemsPedido() {

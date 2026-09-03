@@ -3,9 +3,9 @@ import Carrito from '../src/models/Carrito.js';
 import Producto from '../src/models/Producto.js';
 
 const items = [
-  { email: 'juan@mail.com', producto: 'Figura de dragón', cantidad: 2 },
-  { email: 'juan@mail.com', producto: 'Filamento PLA 1kg', cantidad: 1 },
-  { email: 'maria@mail.com', producto: 'Estuche para celular', cantidad: 3 },
+  { email: 'juan@mail.com', producto: 'Organizador Apex', cantidad: 2 },
+  { email: 'juan@mail.com', producto: 'Kit Engranajes Básicos', cantidad: 1 },
+  { email: 'maria@mail.com', producto: 'Florero Voronoi', cantidad: 3 },
 ];
 
 export default async function seedItemsCarrito() {

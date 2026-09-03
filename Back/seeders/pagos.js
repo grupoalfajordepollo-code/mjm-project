@@ -3,8 +3,8 @@ import Pedido from '../src/models/Pedido.js';
 import Usuario from '../src/models/Usuario.js';
 
 const pagos = [
-  { email: 'juan@mail.com', totalPedido: 8200, metodo: 'Tarjeta de crédito', estado: 'Aprobado', monto: 8200 },
-  { email: 'maria@mail.com', totalPedido: 5400, metodo: 'Transferencia', estado: 'Aprobado', monto: 5400 },
+  { email: 'juan@mail.com', totalPedido: 11100, metodo: 'Tarjeta de crédito', estado: 'Aprobado', monto: 11100 },
+  { email: 'maria@mail.com', totalPedido: 9600, metodo: 'Transferencia', estado: 'Aprobado', monto: 9600 },
 ];
 
 export default async function seedPagos() {
