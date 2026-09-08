@@ -4,7 +4,6 @@ import { Mail, Lock, LogIn } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const LoginForm = () => {
-  const [role, setRole] = useState("cliente");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const { login, loading, error, setError } = useAuth();
@@ -14,8 +13,8 @@ const LoginForm = () => {
     e.preventDefault();
     setError(null);
     try {
-      await login(email, password, role);
-      navigate("/");
+      const data = await login(email, password);
+      navigate(data.rol === "admin" ? "/panel-secured" : "/");
     } catch {
       // el error ya se setea en el context
     }
@@ -28,31 +27,6 @@ const LoginForm = () => {
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-1">Bienvenido</h1>
           <p className="text-gray-500 text-sm">Inicia sesión para acceder a tu panel.</p>
-        </div>
-
-        <div className="flex p-1 mb-8 bg-[#f2f2f2] rounded-lg border border-orange-300">
-          <button
-            type="button"
-            onClick={() => setRole("cliente")}
-            className={`cursor-pointer flex-1 py-2 text-sm font-semibold rounded-md transition-colors ${
-              role === "cliente"
-                ? "bg-[#ba3b0a] text-white shadow-sm"
-                : "text-gray-600 hover:text-gray-800"
-            }`}
-          >
-            Soy Cliente
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole("admin")}
-            className={`cursor-pointer flex-1 py-2 text-sm font-semibold rounded-md transition-colors ${
-              role === "admin"
-                ? "bg-[#ba3b0a] text-white shadow-sm"
-                : "text-gray-600 hover:text-gray-800"
-            }`}
-          >
-            Soy Administrador
-          </button>
         </div>
 
         {error && (

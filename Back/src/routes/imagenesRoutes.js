@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { authMiddleware } from "../middlewares/authMiddleware.js";
+import { adminMiddleware } from "../middlewares/adminMiddleware.js";
 
 import {
   obtenerImagenes,
@@ -12,9 +14,9 @@ const router = Router();
 
 router.get("/", obtenerImagenes);
 router.get("/:id", obtenerImagen);
-router.post("/", crearImagen);
-router.put("/:id", actualizarImagen);
-router.delete("/:id", eliminarImagen);
+router.post("/", authMiddleware, adminMiddleware, crearImagen);
+router.put("/:id", authMiddleware, adminMiddleware, actualizarImagen);
+router.delete("/:id", authMiddleware, adminMiddleware, eliminarImagen);
 
 export default router;
 
