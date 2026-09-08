@@ -7,39 +7,46 @@ const generarJWT = (id, rol) => {
   return jwt.sign({ id, rol }, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRES_IN || "2h" });
 };
 
-// Autenticar usuario
+// Login unificado - detecta el rol automáticamente
 export const login = async (req, res) => {
   try {
-
     const { email, password } = req.body;
 
-    // Verificar usuario
-    const usuario = await Usuario.findOne({
-      where: {
-        email
+    // Buscar admin primero
+    const admin = await Administrador.findOne({ where: { email } });
+    if (admin) {
+      const esPasswordValido = await admin.comprobarPassword(password);
+      if (!esPasswordValido) {
+        return res.status(401).json({ mensaje: "Email o contraseña incorrectos" });
       }
-    });
+      const token = generarJWT(admin.id, "admin");
+      return res.json({
+        token,
+        rol: "admin",
+        usuario: {
+          id: admin.id,
+          nombre: admin.nombre,
+          apellido: admin.apellido,
+          email: admin.email
+        }
+      });
+    }
 
+    // Si no es admin, buscar usuario
+    const usuario = await Usuario.findOne({ where: { email } });
     if (!usuario) {
-      return res.status(401).json({
-        mensaje: "Email o contraseña incorrectos"
-      });
+      return res.status(401).json({ mensaje: "Email o contraseña incorrectos" });
     }
 
-    // Verificar contraseña
     const esPasswordValido = await usuario.comprobarPassword(password);
-
     if (!esPasswordValido) {
-      return res.status(401).json({
-        mensaje: "Email o contraseña incorrectos"
-      });
+      return res.status(401).json({ mensaje: "Email o contraseña incorrectos" });
     }
 
-    // Generar token
     const token = generarJWT(usuario.id, "usuario");
-
     res.json({
       token,
+      rol: "usuario",
       usuario: {
         id: usuario.id,
         nombre: usuario.nombre,
@@ -49,61 +56,7 @@ export const login = async (req, res) => {
     });
 
   } catch (error) {
-
-    res.status(500).json({
-      mensaje: error.message
-    });
-
-  }
-};
-
-// Autenticar admin
-export const loginAdmin = async (req, res) => {
-  try {
-
-    const { email, password } = req.body;
-
-    // Verificar admin
-    const admin = await Administrador.findOne({
-      where: {
-        email
-      }
-    });
-
-    if (!admin) {
-      return res.status(401).json({
-        mensaje: "Email o contraseña incorrectos"
-      });
-    }
-
-    // Verificar contraseña
-    const esPasswordValido = await admin.comprobarPassword(password);
-
-    if (!esPasswordValido) {
-      return res.status(401).json({
-        mensaje: "Email o contraseña incorrectos"
-      });
-    }
-
-    // Generar token
-    const token = generarJWT(admin.id, "admin");
-
-    res.json({
-      token,
-      admin: {
-        id: admin.id,
-        nombre: admin.nombre,
-        apellido: admin.apellido,
-        email: admin.email
-      }
-    });
-
-  } catch (error) {
-
-    res.status(500).json({
-      mensaje: error.message
-    });
-
+    res.status(500).json({ mensaje: error.message });
   }
 };
 
