@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { 
   Search, 
   Filter, 
@@ -10,49 +10,58 @@ import {
   Pencil,
   Trash2
 } from 'lucide-react';
+import { obtenerProductos, eliminarProducto } from '../services/productoService';
 
-const initialProductos = [
-  { id: 1, nombre: 'Organizador Apex', precio: 4500.00, stock: 145, categoriaNombre: 'Branding', fechaCreacion: '24 Oct, 2024' },
-  { id: 2, nombre: 'Engranaje Helicoidal Pro-3', precio: 1250.50, stock: 8, categoriaNombre: 'Repuestos', fechaCreacion: '23 Oct, 2024' },
-  { id: 3, nombre: 'Florero Voronoi', precio: 3200.00, stock: 0, categoriaNombre: 'Bazar', fechaCreacion: '22 Oct, 2024' },
-  { id: 4, nombre: 'Gabinete MK-Z', precio: 12000.00, stock: 42, categoriaNombre: 'Hobbie', fechaCreacion: '22 Oct, 2024' },
-  { id: 5, nombre: 'Dragón Articulado', precio: 5800.00, stock: 12, categoriaNombre: 'Juguetes', fechaCreacion: '21 Oct, 2024' },
-  { id: 6, nombre: 'Soporte Monitor VESA', precio: 8500.00, stock: 35, categoriaNombre: 'Branding', fechaCreacion: '20 Oct, 2024' },
-  { id: 7, nombre: 'Lámpara Lunar 3D', precio: 6200.00, stock: 3, categoriaNombre: 'Bazar', fechaCreacion: '19 Oct, 2024' },
-  { id: 8, nombre: 'Kit Engranajes Básicos', precio: 2100.00, stock: 150, categoriaNombre: 'Repuestos', fechaCreacion: '18 Oct, 2024' },
-];
-
-const ProductManagement = ({ setVistaActiva }) => {
-  const [productos, setProductos] = useState(initialProductos);
+const ProductManagement = ({ onCrear, onEditar }) => {
+  const [productos, setProductos] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 5; 
+  const itemsPerPage = 5;
 
-  const handleEliminar = (id) => {
-    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-      setProductos((prevProductos) => prevProductos.filter(producto => producto.id !== id));
-      // NOTA: Acá iría la petición DELETE a la API
+  const fetchProductos = async () => {
+    setLoading(true);
+    try {
+      const res = await obtenerProductos();
+      setProductos(res.data);
+    } catch (err) {
+      console.error('Error al cargar productos:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Editar: Por ahora solo tira un alert, pero la idea es setear un estado 
-  // global o pasar el ID a ProductCreation para llenarlo con los datos actuales
-  const handleEditar = (id) => {
-    alert(`En el futuro, esto abrirá el formulario para editar el producto con ID: ${id}`);
+  useEffect(() => {
+    fetchProductos();
+  }, []);
+
+  const handleEliminar = async (id) => {
+    if (window.confirm('¿Estás seguro de que deseas eliminar este producto?')) {
+      try {
+        await eliminarProducto(id);
+        setProductos((prev) => prev.filter((p) => p.id !== id));
+      } catch (err) {
+        console.error('Error al eliminar producto:', err);
+        alert('No se pudo eliminar el producto.');
+      }
+    }
   };
 
+  const handleEditar = (id) => {
+    onEditar(id);
+  };
 
-  const productosFiltrados = productos.filter((prod) => 
+  const productosFiltrados = productos.filter((prod) =>
     prod.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
     prod.id.toString().includes(searchTerm)
   );
 
   const totalItems = productosFiltrados.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
-  
+
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  
+
   const currentItems = productosFiltrados.slice(indexOfFirstItem, indexOfLastItem);
 
   const getStockBadge = (stock) => {
@@ -76,7 +85,7 @@ const ProductManagement = ({ setVistaActiva }) => {
               Exportar CSV
             </button>
             <button 
-              onClick={() => setVistaActiva('crear')}
+              onClick={onCrear}
               className="cursor-pointer flex items-center gap-2 px-5 py-2.5 bg-[#B02F00] hover:bg-[#8a2500] text-white text-sm font-bold rounded-lg transition-colors shadow-sm"
             >
               <Plus size={18} strokeWidth={2.5} />
@@ -98,7 +107,7 @@ const ProductManagement = ({ setVistaActiva }) => {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setCurrentPage(1); 
+                  setCurrentPage(1);
                 }}
                 className="w-full pl-9 pr-4 py-2 border border-[#e6d5cc] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#B02F00]/20 focus:border-[#B02F00] transition-colors"
               />
@@ -106,7 +115,7 @@ const ProductManagement = ({ setVistaActiva }) => {
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <button className="p-2 text-gray-500 hover:text-[#B02F00] hover:bg-[#fff5f2] rounded-lg transition-colors border border-transparent hover:border-[#ffdbcc]"><Filter size={18} /></button>
               <button 
-                onClick={() => setProductos(initialProductos)}
+                onClick={fetchProductos}
                 className="p-2 text-gray-500 hover:text-[#B02F00] hover:bg-[#fff5f2] rounded-lg transition-colors border border-transparent hover:border-[#ffdbcc]"
               >
                 <RefreshCw size={18} />
@@ -115,62 +124,64 @@ const ProductManagement = ({ setVistaActiva }) => {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-[#fcfdfe] border-b border-[#e6d5cc]">
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">ID Producto</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Nombre</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Categoría</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Precio</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Stock</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Estado</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Agregado</th>
-                  <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap text-right">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-[#e6d5cc]">
-                {currentItems.length > 0 ? (
-                  currentItems.map((prod) => (
-                    <tr key={prod.id} className="hover:bg-gray-50/50 transition-colors group">
-                      <td className="px-6 py-4 text-sm font-bold text-gray-900 whitespace-nowrap">#{prod.id.toString().padStart(3, '0')}</td>
-                      <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">{prod.nombre}</td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{prod.categoriaNombre}</td>
-                      <td className="px-6 py-4 text-sm font-bold text-gray-900 whitespace-nowrap">${prod.precio.toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
-                      <td className="px-6 py-4 text-sm text-gray-600 font-medium whitespace-nowrap">{prod.stock} un.</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{getStockBadge(prod.stock)}</td>
-                      <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{prod.fechaCreacion}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-right">
-                        
-                        <div className="flex justify-end items-center gap-1">
-                          <button 
-                            onClick={() => handleEditar(prod.id)}
-                            title="Editar Producto"
-                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors rounded-lg"
-                          >
-                            <Pencil size={18} strokeWidth={2} />
-                          </button>
+            {loading ? (
+              <div className="px-6 py-12 text-center text-sm text-gray-500">Cargando productos...</div>
+            ) : (
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-[#fcfdfe] border-b border-[#e6d5cc]">
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">ID Producto</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Nombre</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Categoría</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Precio</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Stock</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap">Estado</th>
+                    <th className="px-6 py-4 text-[10px] font-bold text-gray-500 uppercase tracking-widest whitespace-nowrap text-right">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[#e6d5cc]">
+                  {currentItems.length > 0 ? (
+                    currentItems.map((prod) => (
+                      <tr key={prod.id} className="hover:bg-gray-50/50 transition-colors group">
+                        <td className="px-6 py-4 text-sm font-bold text-gray-900 whitespace-nowrap">#{prod.id.toString().padStart(3, '0')}</td>
+                        <td className="px-6 py-4 text-sm font-medium text-gray-800 whitespace-nowrap">{prod.nombre}</td>
+                        <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">{prod.categoria?.nombre || '-'}</td>
+                        <td className="px-6 py-4 text-sm font-bold text-gray-900 whitespace-nowrap">${Number(prod.precio).toLocaleString('es-AR', { minimumFractionDigits: 2 })}</td>
+                        <td className="px-6 py-4 text-sm text-gray-600 font-medium whitespace-nowrap">{prod.stock} un.</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{getStockBadge(prod.stock)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-right">
                           
-                          <button 
-                            onClick={() => handleEliminar(prod.id)}
-                            title="Eliminar Producto"
-                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-lg"
-                          >
-                            <Trash2 size={18} strokeWidth={2} />
-                          </button>
-                        </div>
+                          <div className="flex justify-end items-center gap-1">
+                            <button 
+                              onClick={() => handleEditar(prod.id)}
+                              title="Editar Producto"
+                              className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors rounded-lg"
+                            >
+                              <Pencil size={18} strokeWidth={2} />
+                            </button>
+                            
+                            <button 
+                              onClick={() => handleEliminar(prod.id)}
+                              title="Eliminar Producto"
+                              className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors rounded-lg"
+                            >
+                              <Trash2 size={18} strokeWidth={2} />
+                            </button>
+                          </div>
 
+                        </td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan="7" className="px-6 py-8 text-center text-sm text-gray-500">
+                        No se encontraron productos.
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan="8" className="px-6 py-8 text-center text-sm text-gray-500">
-                      No se encontraron productos.
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  )}
+                </tbody>
+              </table>
+            )}
           </div>
 
           <div className="p-4 border-t border-[#e6d5cc] flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#fcfdfe]">

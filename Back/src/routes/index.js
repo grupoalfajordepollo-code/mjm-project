@@ -12,6 +12,7 @@ import domicilioRoutes from "./domicilioRoutes.js";
 import imagenesRoutes from "./imagenesRoutes.js";
 import itemxPedidoRoutes from "./itemxPedidoRoutes.js";
 import administradorRoutes from "./administradorRoutes.js";
+import uploadRoutes from "./uploadRoutes.js"
 
 const router = Router();
 
@@ -58,6 +59,9 @@ router.use("/items-pedido", itemxPedidoRoutes);
 
 // Administrador
 router.use("/administradores", administradorRoutes);
+
+//Carga de Imagenes
+router.use("/upload", uploadRoutes)
 
 export default router;
 

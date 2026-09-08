@@ -1,11 +1,11 @@
 import Hero from "./Hero"
-import Categories from "./Categories"
+import ProductCatalog from "./ProductCatalog"
 
 const Home = () => {
   return (
     <>
       <Hero />
-      <Categories />
+      <ProductCatalog />
     </>
   );
 };
