@@ -5,6 +5,7 @@ const categorias = [
   { nombre: 'Filamento', descripcion: 'Rollos de filamento para impresión' },
   { nombre: 'Repuestos', descripcion: 'Repuestos y componentes' },
   { nombre: 'Accesorios', descripcion: 'Accesorios varios' },
+  {nombre: 'Juguetes', descripcion: 'Articulos Divertidos'}
 ];
 
 export default async function seedCategorias() {
