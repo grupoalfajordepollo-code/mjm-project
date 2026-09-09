@@ -1,7 +1,7 @@
 import Administrador from '../src/models/Administrador.js';
 
 const admins = [
-  { nombre: 'Admin', apellido: 'Principal', email: 'admin@mail.com', password: 'admin123' },
+  { nombre: 'Admin', apellido: 'Principal', email: 'admin@mail.com', password: '!Admin123' },
 ];
 
 export default async function seedAdministradores() {
