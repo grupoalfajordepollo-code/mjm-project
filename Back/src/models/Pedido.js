@@ -25,7 +25,8 @@ const Pedido = sequelize.define('Pedido', {
   }
 }, {
   tableName: 'Pedido',
-  timestamps: false
+  timestamps: true,
+  paranoid: true
 });
 
 export default Pedido;

@@ -51,7 +51,8 @@ const Usuario = sequelize.define(
   },
   {
     tableName: "Usuario",
-    timestamps: false,
+    timestamps: true,
+    paranoid: true,
 
     hooks: {
       beforeSave: async (usuario) => {
