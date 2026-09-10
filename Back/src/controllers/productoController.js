@@ -89,8 +89,14 @@ export const crearProducto = async (req, res) => {
       idCategoria,
       idAdministrador,
     });
-
-    res.status(201).json(producto);
+    const productoCreado = await Producto.findByPk(producto.id, {
+      include: [
+        { model: Categoria, as: "categoria" },
+        { model: Imagenes, as: "imagen" },
+        { model: Administrador, as: "administrador", attributes: ["id", "nombre", "apellido"] },
+      ],
+    });
+    res.status(201).json(productoCreado);
   } catch (error) {
     res.status(500).json({
       mensaje: error.message,
@@ -131,7 +137,15 @@ export const actualizarProducto = async (req, res) => {
       fechaAdmin: new Date(),
     });
 
-    res.json(producto);
+    const productoActualizado = await Producto.findByPk(producto.id, {
+      include: [
+        { model: Categoria, as: "categoria" },
+        { model: Imagenes, as: "imagen" },
+        { model: Administrador, as: "administrador", attributes: ["id", "nombre", "apellido"] },
+      ],
+    });
+    res.json(productoActualizado);
+
   } catch (error) {
     res.status(500).json({
       mensaje: error.message,
