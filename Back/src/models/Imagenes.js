@@ -15,6 +15,12 @@ const Imagenes = sequelize.define(
       allowNull: false,
     },
 
+    hash: {
+      type: DataTypes.STRING(64),
+      allowNull: true,
+      unique: true,
+    },
+
     descripcion: {
       type: DataTypes.STRING(255),
       allowNull: true,
@@ -22,7 +28,8 @@ const Imagenes = sequelize.define(
   },
   {
     tableName: "Imagenes",
-    timestamps: false,
+    timestamps: true,
+    paranoid: true,
   }
 );
 

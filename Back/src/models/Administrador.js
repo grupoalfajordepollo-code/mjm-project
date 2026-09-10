@@ -31,7 +31,8 @@ const Administrador = sequelize.define('Administrador', {
   }
 }, {
   tableName: 'Administrador',
-  timestamps: false,
+  timestamps: true,
+  paranoid: true,
   hooks: {
     beforeSave: async (admin) => {
       if (admin.changed('password')) {
