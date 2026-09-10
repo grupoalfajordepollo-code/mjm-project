@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { getAsset } from '../utils/getAssetsUrl';
-import { obtenerProductos } from '../services/productoService';
+import { obtenerProductos, obtenerCategorias } from '../services/productoService';
 
-const categorias = ["Todas", "branding", "bazar", "juguetes", "hobbie"];
 
 const getBadge = (stock) => {
   if (stock === 0) return { text: 'Agotado', style: 'bg-white text-gray-600 shadow-sm' };
@@ -13,21 +12,26 @@ const getBadge = (stock) => {
 
 const ProductCatalog = () => {
   const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState(["Todas"]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("Todas");
 
   useEffect(() => {
-    const fetchProductos = async () => {
+    const fetchData = async () => {
       try {
-        const res = await obtenerProductos();
-        setProductos(res.data);
+        const [resProd, resCat] = await Promise.all([
+          obtenerProductos(),
+          obtenerCategorias(),
+        ]);
+        setProductos(resProd.data);
+        setCategorias(["Todas", ...resCat.data.map((c) => c.nombre)]);
       } catch (err) {
-        console.error('Error al cargar productos:', err);
+        console.error('Error al cargar datos:', err);
       } finally {
         setLoading(false);
       }
     };
-    fetchProductos();
+    fetchData();
   }, []);
 
   const productosFiltrados = activeCategory === "Todas"

@@ -52,7 +52,8 @@ const Domicilio = sequelize.define(
   },
   {
     tableName: "Domicilio",
-    timestamps: false,
+    timestamps: true,
+    paranoid: true,
   }
 );
 

@@ -1,19 +1,12 @@
 import fs from "fs";
-import https from "https";
-import http from "http";
+import crypto from "crypto";
 
 let client = null;
 let ociModules = null;
 const NAMESPACE = process.env.OCI_NAMESPACE;
 const BUCKET = process.env.OCI_BUCKET_NAME;
 
-const keepAliveAgent = new https.Agent({
-  keepAlive: true,
-  keepAliveMsecs: 30000,
-  maxSockets: 10,
-  maxFreeSockets: 5,
-  timeout: 60000,
-});
+const log = (msg) => console.log(`[OCI] ${msg}`);
 
 const getClient = async () => {
   if (client) return client;
@@ -36,29 +29,18 @@ const getClient = async () => {
     common.Region.fromRegionId(process.env.OCI_REGION)
   );
 
-  const clientConfiguration = {
-    timeoutIfExists: 60000,
-  };
-
-  client = new ObjectStorageClient({
-    authenticationDetailsProvider,
-    clientConfiguration,
-    requestInterceptor: {
-      options: {
-        agent: keepAliveAgent,
-      },
-    },
-  });
-
+  client = new ObjectStorageClient({ authenticationDetailsProvider });
+  log("Cliente OCI inicializado");
   return client;
 };
 
 export const subirImagen = async (buffer, nombreOriginal) => {
-  const timestamp = Date.now();
+  const hash = crypto.createHash("sha256").update(buffer).digest("hex");
   const nombreLimpio = nombreOriginal.replace(/[^a-zA-Z0-9.-]/g, "_");
-  const objectName = `assets/productos/${timestamp}-${nombreLimpio}`;
-
+  const objectName = `assets/productos/${hash}-${nombreLimpio}`;
   const client = await getClient();
+
+  log(`Subiendo: ${objectName}`);
   await client.putObject({
     namespaceName: NAMESPACE,
     bucketName: BUCKET,
@@ -66,6 +48,6 @@ export const subirImagen = async (buffer, nombreOriginal) => {
     putObjectBody: buffer,
     contentType: "application/octet-stream",
   });
-
+  log(`Subido OK`);
   return objectName.replace("assets/", "");
 };

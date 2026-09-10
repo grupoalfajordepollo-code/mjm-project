@@ -16,7 +16,8 @@ const Categoria = sequelize.define('Categoria', {
   }
 }, {
   tableName: 'Categoria',
-  timestamps: false
+  timestamps: true,
+  paranoid: true
 });
 
 export default Categoria;

@@ -28,7 +28,8 @@ const Pago = sequelize.define('Pago', {
   }
 }, {
   tableName: 'Pago',
-  timestamps: false
+  timestamps: true,
+  paranoid: true
 });
 
 export default Pago;
