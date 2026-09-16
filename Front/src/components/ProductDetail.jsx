@@ -14,7 +14,6 @@ import {
 import { obtenerProducto } from '../services/productoService';
 import { getAsset } from '../utils/getAssetsUrl';
 
-// Lógica de badge coincidente con el catálogo y el diseño del prototipo
 const getBadge = (stock) => {
   if (stock === 0) {
     return { 
@@ -183,7 +182,6 @@ const ProductDetail = ({ productoProp }) => {
     <main className="w-full bg-[#fcfdfe] font-space py-8 md:py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        {/* Breadcrumb / Botón volver */}
         <div className="mb-6 flex items-center justify-between">
           <Link
             to="/"
@@ -200,14 +198,11 @@ const ProductDetail = ({ productoProp }) => {
           )}
         </div>
 
-        {/* Tarjeta de Detalle del Producto */}
         <div className="bg-white rounded-3xl border border-gray-100 shadow-[0_10px_35px_-15px_rgba(0,0,0,0.06)] p-6 sm:p-8 lg:p-10">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
             
-            {/* Columna Izquierda: Galería de Imágenes */}
             <div className="flex flex-col gap-4">
               
-              {/* Imagen Principal */}
               <div className="relative aspect-square w-full rounded-2xl overflow-hidden bg-[#0e1015] flex items-center justify-center shadow-inner border border-gray-100">
                 <img
                   src={activeImageUrl}
@@ -216,7 +211,6 @@ const ProductDetail = ({ productoProp }) => {
                 />
               </div>
 
-              {/* Fila de Miniaturas (Thumbnails) */}
               {imagesList.length > 1 && (
                 <div className="grid grid-cols-4 gap-3">
                   {imagesList.map((imgItem, idx) => {
@@ -246,10 +240,8 @@ const ProductDetail = ({ productoProp }) => {
               )}
             </div>
 
-            {/* Columna Derecha: Información y Acciones */}
             <div className="flex flex-col">
               
-              {/* Encabezado: Badge de Stock y Código de Referencia */}
               <div className="flex items-center justify-between gap-4 mb-2">
                 <span
                   className={`inline-flex items-center px-3 py-1 text-xs font-bold uppercase tracking-wider rounded-full ${badgeInfo.style}`}
@@ -263,12 +255,10 @@ const ProductDetail = ({ productoProp }) => {
                 </span>
               </div>
 
-              {/* Nombre del Producto */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 tracking-tight mt-2 mb-3">
                 {currentProd.nombre}
               </h1>
 
-              {/* Precio */}
               <div className="mb-5">
                 <span className="text-3xl sm:text-4xl font-extrabold text-[#c2410c] tracking-tight">
                   ${formattedPrice}
@@ -277,7 +267,6 @@ const ProductDetail = ({ productoProp }) => {
 
               <hr className="border-t border-gray-100 my-2 mb-5" />
 
-              {/* Sección Descripción */}
               <div className="mb-6">
                 <h2 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-2.5">
                   DESCRIPCIÓN
@@ -289,7 +278,6 @@ const ProductDetail = ({ productoProp }) => {
 
               <hr className="border-t border-gray-100 my-2 mb-6" />
 
-              {/* Selector de Cantidad */}
               <div className="flex items-center justify-between gap-4 mb-6">
                 <span className="text-sm font-semibold text-gray-800">
                   Cantidad
@@ -322,7 +310,6 @@ const ProductDetail = ({ productoProp }) => {
                 </div>
               </div>
 
-              {/* Botón Agregar al Carrito */}
               <button
                 type="button"
                 onClick={handleAgregarAlCarrito}
@@ -346,17 +333,14 @@ const ProductDetail = ({ productoProp }) => {
                 )}
               </button>
 
-              {/* Mensaje informativo de stock */}
               {stockDisponible > 0 && stockDisponible <= 5 && (
                 <p className="text-center text-xs text-amber-600 mt-2 font-medium">
                   ¡Solo quedan {stockDisponible} en inventario!
                 </p>
               )}
 
-              {/* Tarjetas de Garantía y Envío (Beneficios) */}
               <div className="grid grid-cols-2 gap-3 sm:gap-4 mt-6">
                 
-                {/* Envío Express */}
                 <div className="flex items-center gap-3 p-3 sm:p-3.5 rounded-xl border border-gray-200/80 bg-white">
                   <div className="p-2 rounded-lg bg-orange-50 text-[#ea580c] shrink-0">
                     <Truck size={20} strokeWidth={2} />
@@ -371,7 +355,6 @@ const ProductDetail = ({ productoProp }) => {
                   </div>
                 </div>
 
-                {/* Garantía MJM */}
                 <div className="flex items-center gap-3 p-3 sm:p-3.5 rounded-xl border border-gray-200/80 bg-white">
                   <div className="p-2 rounded-lg bg-orange-50 text-[#ea580c] shrink-0">
                     <ShieldCheck size={20} strokeWidth={2} />
