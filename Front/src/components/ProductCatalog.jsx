@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import { getAsset } from '../utils/getAssetsUrl';
 import { obtenerProductos, obtenerCategorias } from '../services/productoService';
@@ -94,7 +95,7 @@ const ProductCatalog = () => {
                   className="bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col transition-transform hover:-translate-y-1"
                 >
 
-                  <div className="relative aspect-4/3 bg-gray-100 overflow-hidden">
+                  <Link to={`/producto/${prod.id}`} className="relative aspect-4/3 bg-gray-100 overflow-hidden block group">
                     <div className={`absolute top-3 right-3 px-3 py-1 text-[10px] font-bold uppercase tracking-wider rounded-full z-10 ${badge.style}`}>
                       {badge.text}
                     </div>
@@ -102,9 +103,9 @@ const ProductCatalog = () => {
                     <img
                       src={getAsset(prod.imagen?.imagen)}
                       alt={prod.nombre}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                  </div>
+                  </Link>
 
                   <div className="p-5 flex flex-col grow">
 
@@ -113,7 +114,9 @@ const ProductCatalog = () => {
                     </span>
 
                     <h3 className="text-lg font-bold text-gray-900 mb-2 leading-tight">
-                      {prod.nombre}
+                      <Link to={`/producto/${prod.id}`} className="hover:text-[#B02F00] transition-colors">
+                        {prod.nombre}
+                      </Link>
                     </h3>
 
                     <p className="text-gray-500 text-xs leading-relaxed mb-6 line-clamp-2 grow">
