@@ -28,7 +28,8 @@ const ItemxCarrito = sequelize.define('ItemxCarrito', {
   }
 }, {
   tableName: 'ItemxCarrito',
-  timestamps: false
+  timestamps: true,
+  paranoid: true
 });
 
 export default ItemxCarrito;

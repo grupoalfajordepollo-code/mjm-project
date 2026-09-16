@@ -1,5 +1,6 @@
 import { DataTypes } from 'sequelize';
 import { sequelize } from '../config/database.js';
+import bcrypt from 'bcryptjs';
 
 const Administrador = sequelize.define('Administrador', {
   id: {
@@ -30,7 +31,22 @@ const Administrador = sequelize.define('Administrador', {
   }
 }, {
   tableName: 'Administrador',
-  timestamps: false
+  timestamps: true,
+  paranoid: true,
+  hooks: {
+    beforeSave: async (admin) => {
+      if (admin.changed('password')) {
+        const salt = await bcrypt.genSalt(10);
+        admin.password = await bcrypt.hash(admin.password, salt);
+      }
+    }
+  }
 });
+
+
+Administrador.prototype.comprobarPassword = async function (password) {
+  return await bcrypt.compare(password, this.password);
+};
+
 
 export default Administrador;
