@@ -1,0 +1,9 @@
+# Keys and certificates
+*.pem
+*.key
+.keys/
+
+# Environment
+.env
+.env.*
+!.env.example
