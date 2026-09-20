@@ -15,7 +15,7 @@ export const obtenerItems = async (req, res) => {
         {
           model: Producto,
           as: "producto",
-          attributes: ["id", "nombre", "precio", "stock", "idImagen"]
+          attributes: ["id", "nombre", "precio", "stock"]
         }
       ]
     });
@@ -42,7 +42,7 @@ export const obtenerItem = async (req, res) => {
         {
           model: Producto,
           as: "producto",
-          attributes: ["id", "nombre", "precio", "stock", "idImagen"]
+          attributes: ["id", "nombre", "precio", "stock"]
         }
       ]
     });
