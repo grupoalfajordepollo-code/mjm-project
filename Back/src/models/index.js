@@ -72,16 +72,17 @@ Producto.belongsTo(Administrador, {
 
 
 // Relaciones de Producto e Imagenes
-Imagenes.hasMany(Producto, {
-  foreignKey: "idImagen",
-  as: "productos",
+Producto.hasMany(Imagenes, {
+  foreignKey: "idProducto",
+  as: "imagenes",
+  onDelete: "SET NULL",
 });
 
-Producto.belongsTo(Imagenes, {
-  foreignKey: "idImagen",
-  as: "imagen",
-});
-
+Imagenes.belongsTo(Producto, {
+  foreignKey: "idProducto",
+  as: "producto",
+  onDelete: "SET NULL"
+})
 
 // Relaciones de Carrito
 Carrito.hasMany(ItemxCarrito, {

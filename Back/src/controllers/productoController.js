@@ -12,7 +12,7 @@ export const obtenerProductos = async (req, res) => {
         },
         {
           model: Imagenes,
-          as: "imagen",
+          as: "imagenes",
         },
         {
           model: Administrador,
@@ -20,6 +20,7 @@ export const obtenerProductos = async (req, res) => {
           attributes: ["id", "nombre", "apellido"],
         },
       ],
+      order: [[{model : Imagenes, as:"imagenes"}, "orden", "ASC"]]
     });
 
     res.json(productos);
@@ -42,7 +43,7 @@ export const obtenerProducto = async (req, res) => {
         },
         {
           model: Imagenes,
-          as: "imagen",
+          as: "imagenes",
         },
         {
           model: Administrador,
@@ -50,6 +51,8 @@ export const obtenerProducto = async (req, res) => {
           attributes: ["id", "nombre", "apellido"],
         },
       ],
+      order: [[{model : Imagenes, as:"imagenes"}, "orden", "ASC"]]
+
     });
 
     if (!producto) {
@@ -75,7 +78,6 @@ export const crearProducto = async (req, res) => {
       descripcion,
       precio,
       stock,
-      idImagen,
       idCategoria,
       idAdministrador,
     } = req.body;
@@ -85,16 +87,17 @@ export const crearProducto = async (req, res) => {
       descripcion,
       precio,
       stock,
-      idImagen,
       idCategoria,
       idAdministrador,
     });
     const productoCreado = await Producto.findByPk(producto.id, {
       include: [
         { model: Categoria, as: "categoria" },
-        { model: Imagenes, as: "imagen" },
+        { model: Imagenes, as: "imagenes" },
         { model: Administrador, as: "administrador", attributes: ["id", "nombre", "apellido"] },
       ],
+      order: [[{model : Imagenes, as:"imagenes"}, "orden", "ASC"]]
+
     });
     res.status(201).json(productoCreado);
   } catch (error) {
@@ -121,7 +124,6 @@ export const actualizarProducto = async (req, res) => {
       descripcion,
       precio,
       stock,
-      idImagen,
       idCategoria,
       idAdministrador,
     } = req.body;
@@ -131,7 +133,6 @@ export const actualizarProducto = async (req, res) => {
       descripcion,
       precio,
       stock,
-      idImagen,
       idCategoria,
       idAdministrador,
       fechaAdmin: new Date(),
@@ -140,9 +141,11 @@ export const actualizarProducto = async (req, res) => {
     const productoActualizado = await Producto.findByPk(producto.id, {
       include: [
         { model: Categoria, as: "categoria" },
-        { model: Imagenes, as: "imagen" },
+        { model: Imagenes, as: "imagenes" },
         { model: Administrador, as: "administrador", attributes: ["id", "nombre", "apellido"] },
       ],
+       order: [[{model : Imagenes, as:"imagenes"}, "orden", "ASC"]]
+
     });
     res.json(productoActualizado);
 
@@ -166,6 +169,14 @@ export const eliminarProducto = async (req, res) => {
     }
 
     await producto.destroy();
+
+    // Las imágenes son paranoid (soft delete) igual que el producto, por eso
+    // el ON DELETE SET NULL de la FK nunca se dispara (no hay DELETE físico).
+    // Se liberan a nivel app: quedan huérfanas y reutilizables.
+    await Imagenes.update(
+      { idProducto: null },
+      { where: { idProducto: req.params.id } }
+    );
 
     res.json({
       mensaje: "Producto eliminado",

@@ -32,6 +32,31 @@ export const obtenerImagen = async (req, res) => {
   }
 };
 
+export const marcarPortada = async (req, res) => {
+  try {
+    const imagen = await Imagenes.findByPk(req.params.id)
+  if (!imagen || !imagen.idProducto ) {
+    return res.status(404).json({mensaje: "Imagen no encontrada o sin producto"})
+  }
+  await Imagenes.sequelize.transaction(async (t) => {
+    const galeria = await Imagenes.findAll({
+      where: {idProducto: imagen.idProducto},
+      order :[["orden", "ASC"]],
+      transaction: t,
+    });
+    const resto = galeria.filter((img) =>img.id !== imagen.id);
+    const normalizada = [imagen, ...resto];
+    for(let i = 0; i < normalizada.length; i++) {
+      await normalizada[i].update({orden: i}, {transaction: t});
+    } 
+  });
+  const actualizada = await Imagenes.findByPk(req.params.id);
+  res.json(actualizada);
+  } catch (error) {
+    res.status(500).json({ mensaje: error.message})
+  }
+}
+
 // Crear imagen
 export const crearImagen = async (req, res) => {
   try {

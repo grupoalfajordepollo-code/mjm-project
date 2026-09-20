@@ -44,7 +44,12 @@ function App() {
           {/*Protected routes*/}
           <Route path="/panel-secured" element={
             <ProtectedRoute requiredRole="admin">
-              <ProductsDashboard />
+              <ProductsDashboard key="productos" />
+            </ProtectedRoute>
+          } />
+          <Route path="/panel-secured/pedidos" element={
+            <ProtectedRoute requiredRole="admin">
+              <ProductsDashboard key="pedidos" vistaInicial="pedidos" />
             </ProtectedRoute>
           } />
           {/*If no match route, redirect to 404*/}

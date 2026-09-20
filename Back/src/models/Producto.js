@@ -31,11 +31,6 @@ const Producto = sequelize.define(
       defaultValue: 0,
     },
 
-    idImagen: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-    },
-
     idCategoria: {
       type: DataTypes.INTEGER,
       allowNull: false,

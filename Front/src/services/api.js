@@ -4,7 +4,7 @@ export const decodeToken = (token) => {
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
     return payload
-  } catch (error) {
+  } catch {
     return null
   }
 };
@@ -33,7 +33,10 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use (
   (response) => response,
   (error) => {
-    if (error.response?.status === 401){
+    // El fallo de login (401/429) lo maneja cada formulario con reintento:
+    // redirigir acá expulsaría al admin de /login-admin al login común.
+    const esLogin = error.config?.url?.includes("/auth/login");
+    if (error.response?.status === 401 && !esLogin){
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       localStorage.removeItem("rol");
@@ -41,6 +44,6 @@ api.interceptors.response.use (
     }
     return Promise.reject(error)
    }
-)
+ )
 
 export default api;
