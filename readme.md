@@ -129,6 +129,11 @@ Listo! Abrir en el navegador: **http://localhost:5173**
 
 Para entrar al panel de administrador ir a: **http://localhost:5173/login-admin**
 
+### Seguridad del acceso admin (leer antes de operar)
+
+1. **Nadie del equipo te va a pedir la clave** por teléfono, email o WhatsApp. Si alguien lo hace, es un intento de engaño: cortá y avisá al responsable.
+2. Tras varios intentos fallidos el acceso se bloquea temporalmente (es normal, esperá la cuenta regresiva).
+
 ---
 
 ## Que tiene el proyecto

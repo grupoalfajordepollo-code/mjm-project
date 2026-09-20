@@ -137,7 +137,35 @@ export const actualizarPedido = async (req, res) => {
       }
     }
 
-    await pedido.update(req.body);
+    // Whitelist: desde el panel solo se cambia el estado. Total, usuario e
+    // items no se tocan por acá (integridad de la venta).
+    const ESTADOS_VALIDOS = ["Pendiente", "Enviado", "Entregado", "Cancelado"];
+    // Máquina de estados: Entregado y Cancelado son terminales (inmutables);
+    // Enviado solo puede avanzar a Entregado (no se "despacha" dos veces ni
+    // vuelve atrás). Mismo criterio en el front (OrderManagement).
+    const TRANSICIONES = {
+      Pendiente: ["Enviado", "Cancelado"],
+      Enviado: ["Entregado"],
+      Entregado: [],
+      Cancelado: [],
+    };
+    const { estado } = req.body;
+    if (estado !== undefined && !ESTADOS_VALIDOS.includes(estado)) {
+      return res.status(400).json({
+        mensaje: `Estado inválido. Válidos: ${ESTADOS_VALIDOS.join(", ")}`
+      });
+    }
+    const actual = pedido.estado;
+    const permitidas = TRANSICIONES[actual] || [];
+    if (estado !== undefined && estado !== actual && !permitidas.includes(estado)) {
+      return res.status(409).json({
+        mensaje: permitidas.length === 0
+          ? `Pedido ${actual.toLowerCase()}: ya está cerrado y no admite cambios.`
+          : `Transición no permitida desde "${actual}". Permitidas: ${permitidas.join(", ")}.`
+      });
+    }
+
+    await pedido.update({ estado });
 
     res.json(pedido);
 

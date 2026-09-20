@@ -2,9 +2,10 @@ import { useState } from 'react';
 import AdminSidebar from './AdminSidebar';
 import ProductManagement from './ProductManagement';
 import ProductCreation from './ProductCreation';
+import OrderManagement from './OrderManagement';
 
-const ProductsDashboard = () => {
-  const [vistaActiva, setVistaActiva] = useState('tabla');
+const ProductsDashboard = ({ vistaInicial = 'tabla' }) => {
+  const [vistaActiva, setVistaActiva] = useState(vistaInicial);
   const [productoEditando, setProductoEditando] = useState(null);
 
   const handleCrear = () => {
@@ -27,7 +28,9 @@ const ProductsDashboard = () => {
       <div className="flex flex-1 overflow-hidden">
         <AdminSidebar />
         <div className="flex-1 overflow-y-auto">
-          {vistaActiva === 'tabla' ? (
+          {vistaActiva === 'pedidos' ? (
+            <OrderManagement />
+          ) : vistaActiva === 'tabla' ? (
             <ProductManagement onCrear={handleCrear} onEditar={handleEditar} />
           ) : (
             <ProductCreation

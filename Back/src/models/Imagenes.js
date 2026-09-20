@@ -10,6 +10,16 @@ const Imagenes = sequelize.define(
       autoIncrement: true,
     },
 
+    idProducto:{
+      type: DataTypes.INTEGER,
+      allowNull: true
+    },
+    orden: {
+      type: DataTypes.INTEGER,
+      allowNull:false,
+      defaultValue: 0,
+    },
+
     imagen: {
       type: DataTypes.STRING(200),
       allowNull: false,

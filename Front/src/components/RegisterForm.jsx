@@ -59,7 +59,7 @@ const RegisterForm = () => {
 
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Crear Cuenta</h1>
-            <p className="text-[#5B4039] text-sm">
+              <p className="text-gray-500 text-sm">
               Completa los datos para comenzar tu experiencia en MJM 3D.
             </p>
           </div>
@@ -73,7 +73,7 @@ const RegisterForm = () => {
           <form className="space-y-5" onSubmit={handleSubmit}>
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="flex-1">
-                <label className="block text-xs font-bold text-[#5B4039] mb-1.5">
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
                   Nombre
                 </label>
                 <input
@@ -81,12 +81,12 @@ const RegisterForm = () => {
                   placeholder="Ej: Juan"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff5a2c] focus:border-transparent transition-all"
+                  className="w-full px-4 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#B02F00]/20 focus:border-[#B02F00] transition-all"
                   required
                 />
               </div>
               <div className="flex-1">
-                <label className="block text-xs font-bold text-[#5B4039] mb-1.5">
+                <label className="block text-xs font-bold text-gray-700 mb-1.5">
                   Apellido
                 </label>
                 <input
@@ -94,14 +94,14 @@ const RegisterForm = () => {
                   placeholder="Ej: Pérez"
                   value={apellido}
                   onChange={(e) => setApellido(e.target.value)}
-                  className="w-full px-4 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff5a2c] focus:border-transparent transition-all"
+                  className="w-full px-4 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#B02F00]/20 focus:border-[#B02F00] transition-all"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5B4039] mb-1.5">
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">
                 Email
               </label>
               <input
@@ -109,13 +109,13 @@ const RegisterForm = () => {
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff5a2c] focus:border-transparent transition-all"
+                className="w-full px-4 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#B02F00]/20 focus:border-[#B02F00] transition-all"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5B4039] mb-1.5">
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">
                 Contraseña
               </label>
               <div className="relative">
@@ -124,13 +124,13 @@ const RegisterForm = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-4 pr-12 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 tracking-widest focus:outline-none focus:ring-2 focus:ring-[#ff5a2c] focus:border-transparent transition-all"
+                  className="w-full pl-4 pr-12 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 tracking-widest focus:outline-none focus:ring-2 focus:ring-[#B02F00]/20 focus:border-[#B02F00] transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#5B4039] hover:text-[#ff5a2c] cursor-pointer transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#B02F00] cursor-pointer transition-colors"
                 >
                   {showPassword ? <EyeOff size={20} strokeWidth={1.5} /> : <Eye size={20} strokeWidth={1.5} />}
                 </button>
@@ -138,7 +138,7 @@ const RegisterForm = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#5B4039] mb-1.5">
+              <label className="block text-xs font-bold text-gray-700 mb-1.5">
                 Confirmar Contraseña
               </label>
               <div className="relative">
@@ -147,13 +147,13 @@ const RegisterForm = () => {
                   placeholder="••••••••"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-4 pr-12 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 tracking-widest focus:outline-none focus:ring-2 focus:ring-[#ff5a2c] focus:border-transparent transition-all"
+                  className="w-full pl-4 pr-12 py-2.5 bg-white border border-[#e6d5cc] rounded-lg text-gray-900 placeholder-gray-400 tracking-widest focus:outline-none focus:ring-2 focus:ring-[#B02F00]/20 focus:border-[#B02F00] transition-all"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8a4228] hover:text-[#ff5a2c] cursor-pointer transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-[#B02F00] cursor-pointer transition-colors"
                 >
                   {showConfirmPassword ? <EyeOff size={20} strokeWidth={1.5} /> : <Eye size={20} strokeWidth={1.5} />}
                 </button>
@@ -166,7 +166,7 @@ const RegisterForm = () => {
                 id="terms"
                 checked={acceptedTerms}
                 onChange={(e) => setAcceptedTerms(e.target.checked)}
-                className="w-4 h-4 rounded border-gray-300 text-[#ff5a2c] focus:ring-[#ff5a2c] cursor-pointer"
+                className="w-4 h-4 rounded border-gray-300 text-[#B02F00] focus:ring-[#B02F00] cursor-pointer"
                 required
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600 cursor-pointer">
@@ -177,7 +177,7 @@ const RegisterForm = () => {
             <button
               type="submit"
               disabled={loading}
-              className="cursor-pointer w-full bg-[#ff5a2c] hover:bg-[#e04a1f] text-white font-bold py-3.5 px-4 rounded-lg transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cursor-pointer w-full bg-[#B02F00] hover:bg-[#8a2500] text-white font-bold py-3.5 px-4 rounded-lg transition-colors mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Creando cuenta..." : "Crear Cuenta"}
             </button>
