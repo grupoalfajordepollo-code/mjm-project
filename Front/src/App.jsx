@@ -11,6 +11,7 @@ import Unauthorized401 from "./components/Unauthorized401";
 import NotFound404 from "./components/NotFound404";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProductsDashboard from "./components/ProductsDashboard";
+import ProductDetail from "./components/ProductDetail";
 
 function App() {
   useEffect(() => {
@@ -37,6 +38,8 @@ function App() {
         <Routes>
           {/*Public routes*/}
           <Route path="/" element={<><Header /><Home /><Footer /></>} />
+          <Route path="/producto/:id" element={<><Header /><ProductDetail /><Footer /></>} />
+          <Route path="/producto" element={<><Header /><ProductDetail /><Footer /></>} />
           <Route path="/login" element={<><Header /><LoginForm /><Footer /></>} />
           <Route path="/login-admin" element={<AdminLoginForm />} />
           <Route path="/registro" element={<><Header /><RegisterForm /><Footer /></>} />
