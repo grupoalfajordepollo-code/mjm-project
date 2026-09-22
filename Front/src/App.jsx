@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
+import CatalogPage from "./components/CatalogPage";
 import LoginForm from "./components/LoginForm";
 import AdminLoginForm from "./components/AdminLoginForm";
 import RegisterForm from "./components/RegisterForm";
@@ -12,6 +13,13 @@ import NotFound404 from "./components/NotFound404";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProductsDashboard from "./components/ProductsDashboard";
 import ProductDetail from "./components/ProductDetail";
+
+// Remount por id: al navegar detalle -> detalle (ej. desde el buscador del
+// Header) resetea imagen activa, cantidad y feedback sin setStates en efecto.
+const ProductDetailRoute = () => {
+  const { id } = useParams();
+  return <ProductDetail key={id ?? "sin-id"} />;
+};
 
 function App() {
   useEffect(() => {
@@ -38,7 +46,8 @@ function App() {
         <Routes>
           {/*Public routes*/}
           <Route path="/" element={<><Header /><Home /><Footer /></>} />
-          <Route path="/producto/:id" element={<><Header /><ProductDetail /><Footer /></>} />
+          <Route path="/catalogo" element={<><Header /><CatalogPage /><Footer /></>} />
+          <Route path="/producto/:id" element={<><Header /><ProductDetailRoute /><Footer /></>} />
           <Route path="/producto" element={<><Header /><ProductDetail /><Footer /></>} />
           <Route path="/login" element={<><Header /><LoginForm /><Footer /></>} />
           <Route path="/login-admin" element={<AdminLoginForm />} />

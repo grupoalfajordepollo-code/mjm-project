@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Search, ShoppingCart, CircleUserRound } from 'lucide-react';
-import { useNavigate, Link, useLocation, useSearchParams } from 'react-router-dom';
+import { useNavigate, Link, NavLink, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
 import { obtenerProductos } from "../services/productoService";
 import { getAsset } from "../utils/getAssetsUrl";
@@ -37,32 +37,53 @@ const Header = () => {
   const irAlCatalogo = () => {
     setAbierto(false);
     setActivo(-1);
-    if (location.pathname !== "/") {
-      navigate(q ? `/?q=${encodeURIComponent(q)}` : "/");
+    // Los resultados se ven en la página de catálogo (/catalogo?q=...),
+    // que tiene filtros, orden y paginación. Si ya estamos ahí, solo
+    // actualizamos el q conservando el resto de los filtros.
+    if (location.pathname === "/catalogo") {
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        if (q) next.set("q", q);
+        else next.delete("q");
+        next.delete("page");
+        return next;
+      });
+    } else {
+      navigate(q ? `/catalogo?q=${encodeURIComponent(q)}` : "/catalogo");
     }
-    // espera al render del home si venimos de otra ruta
     setTimeout(() => {
-      document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
-    }, location.pathname !== "/" ? 350 : 0);
+      window.scrollTo(0, 0);
+    }, 0);
   };
 
   const elegir = (prod) => {
-    if (location.pathname !== "/") {
-      navigate(`/?q=${encodeURIComponent(prod.nombre)}`);
-    } else {
-      setSearchParams({ q: prod.nombre });
-    }
+    if (!prod?.id) return;
     setAbierto(false);
     setActivo(-1);
+    // La sugerencia va directo al detalle, no filtra el catálogo.
+    // Desde cualquier ruta (home con ?q, detalle de otro producto, etc.)
+    // navegamos a /producto/:id y el Header limpia su ?q al cambiar de ruta.
+    navigate(`/producto/${prod.id}`);
+    // ProductDetail también hace scrollTo(0,0) al montar; esto cubre el caso
+    // detalle -> detalle donde el scroll debe resetearse.
     setTimeout(() => {
-      document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
-    }, location.pathname !== "/" ? 350 : 0);
+      window.scrollTo(0, 0);
+    }, 0);
   };
 
   const buscar = (valor) => {
     setActivo(-1);
     setAbierto(true);
-    if (location.pathname !== "/") {
+    if (location.pathname === "/catalogo") {
+      // En la página de catálogo el q se edita en el lugar, sin cambiar de ruta
+      setSearchParams((prev) => {
+        const next = new URLSearchParams(prev);
+        if (valor) next.set("q", valor);
+        else next.delete("q");
+        next.delete("page");
+        return next;
+      });
+    } else if (location.pathname !== "/") {
       // replace para no ensuciar el historial con cada tecla
       navigate(valor ? `/?q=${encodeURIComponent(valor)}` : "/", { replace: true });
     } else if (valor) {
@@ -87,13 +108,32 @@ const Header = () => {
             MJM 3D
           </Link>
 
-          <nav className="hidden sm:flex items-center gap-6">
-            <Link 
-              to="/" 
-              className="text-[#B02F00] font-bold text-sm border-b-2 border-[#B02F00] pb-1"
+          <nav className="hidden sm:flex items-center gap-6" aria-label="Navegación principal">
+            <NavLink
+              to="/"
+              end
+              className={({ isActive }) =>
+                `text-sm font-bold pb-1 transition-colors ${
+                  isActive
+                    ? 'text-[#B02F00] border-b-2 border-[#B02F00]'
+                    : 'text-gray-500 hover:text-[#B02F00]'
+                }`
+              }
             >
               Home
-            </Link>
+            </NavLink>
+            <NavLink
+              to="/catalogo"
+              className={({ isActive }) =>
+                `text-sm font-bold pb-1 transition-colors ${
+                  isActive
+                    ? 'text-[#B02F00] border-b-2 border-[#B02F00]'
+                    : 'text-gray-500 hover:text-[#B02F00]'
+                }`
+              }
+            >
+              Catálogo
+            </NavLink>
           </nav>
         </div>
 

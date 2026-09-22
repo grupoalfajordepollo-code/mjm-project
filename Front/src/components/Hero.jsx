@@ -1,8 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import { getAsset } from "../utils/getAssetsUrl";
 
 const Hero = () => {
+  const navigate = useNavigate();
 
   const HeroImgUrl = getAsset("MJMI/Home/Hero.webp");
+
+  const irAlCatalogo = () => {
+    navigate("/catalogo");
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  };
   
 
   return (
@@ -23,6 +32,7 @@ const Hero = () => {
             <div className="flex flex-wrap items-center gap-4">
               <button 
                 type="button"
+                onClick={irAlCatalogo}
                 className="cursor-pointer px-8 py-3.5 bg-[#B02F00] hover:bg-[#8a2500] text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-colors shadow-sm"
               >
                 Ver Catálogo
