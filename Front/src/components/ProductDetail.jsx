@@ -48,7 +48,11 @@ const ProductDetail = ({ productoProp }) => {
   const [agregadoFeedback, setAgregadoFeedback] = useState(false);
 
   // Carga de producto desde el backend mediante el servicio productoService
+  // NOTA: el reset de UI local (imagen activa, cantidad) ante un cambio de
+  // producto lo hace el remount vía key={id} en App.jsx, no acá.
   useEffect(() => {
+    window.scrollTo(0, 0);
+
     if (productoProp) {
       setProducto(productoProp);
       return;
@@ -143,7 +147,8 @@ const ProductDetail = ({ productoProp }) => {
   }
 
   // Si no hay imágenes configuradas aún en el objeto OCI, se utiliza el fallback oficial
-  const activeImagePath = imagesList[activeImageIndex] || null;
+  const safeImageIndex = imagesList.length > 0 ? Math.min(activeImageIndex, imagesList.length - 1) : 0;
+  const activeImagePath = imagesList[safeImageIndex] || null;
   const activeImageUrl = getAsset(activeImagePath);
 
   const stockDisponible = typeof currentProd.stock === 'number' ? currentProd.stock : 1;
@@ -215,7 +220,7 @@ const ProductDetail = ({ productoProp }) => {
                 <div className="grid grid-cols-4 gap-3">
                   {imagesList.map((imgItem, idx) => {
                     const thumbUrl = getAsset(imgItem);
-                    const isActive = activeImageIndex === idx;
+                    const isActive = safeImageIndex === idx;
                     return (
                       <button
                         key={idx}
