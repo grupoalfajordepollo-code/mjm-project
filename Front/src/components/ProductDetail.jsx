@@ -9,10 +9,12 @@ import {
   ArrowLeft, 
   AlertTriangle,
   Check,
-  Package
+  Package,
+  ArrowRight
 } from 'lucide-react';
 import { obtenerProducto } from '../services/productoService';
 import { getAsset } from '../utils/getAssetsUrl';
+import { useCart } from '../context/CartContext';
 
 const getBadge = (stock) => {
   if (stock === 0) {
@@ -39,6 +41,7 @@ const getBadge = (stock) => {
 const ProductDetail = ({ productoProp }) => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { agregarAlCarrito } = useCart();
 
   const [producto, setProducto] = useState(productoProp || null);
   const [loading, setLoading] = useState(!productoProp && !!id);
@@ -170,6 +173,7 @@ const ProductDetail = ({ productoProp }) => {
   // Agregar al carrito
   const handleAgregarAlCarrito = () => {
     if (isAgotado) return;
+    agregarAlCarrito(currentProd, cantidad);
     setAgregadoFeedback(true);
     setTimeout(() => {
       setAgregadoFeedback(false);
@@ -337,6 +341,18 @@ const ProductDetail = ({ productoProp }) => {
                   </>
                 )}
               </button>
+
+              {agregadoFeedback && (
+                <div className="mt-2 text-center animate-in fade-in duration-200">
+                  <Link
+                    to="/carrito"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-[#ea580c] hover:underline"
+                  >
+                    <span>Ir a revisar tu carrito</span>
+                    <ArrowRight size={13} />
+                  </Link>
+                </div>
+              )}
 
               {stockDisponible > 0 && stockDisponible <= 5 && (
                 <p className="text-center text-xs text-amber-600 mt-2 font-medium">

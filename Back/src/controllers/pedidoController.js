@@ -82,6 +82,49 @@ export const obtenerPedido = async (req, res) => {
   }
 };
 
+// Obtener pedidos por usuario
+export const obtenerPedidosPorUsuario = async (req, res) => {
+  try {
+    const idUsuario = req.params.idUsuario || req.usuarioId;
+
+    if (req.usuario && req.usuario.id !== Number(idUsuario)) {
+      return res.status(403).json({
+        mensaje: "No tienes permiso para ver los pedidos de este usuario"
+      });
+    }
+
+    const pedidos = await Pedido.findAll({
+      where: {
+        idUsuario
+      },
+      include: [
+        {
+          model: ItemxPedido,
+          as: "items",
+          include: [
+            {
+              model: Producto,
+              as: "producto"
+            }
+          ]
+        },
+        {
+          model: Pago,
+          as: "pago"
+        }
+      ],
+      order: [["id", "DESC"]]
+    });
+
+    res.json(pedidos);
+
+  } catch (error) {
+    res.status(500).json({
+      mensaje: error.message
+    });
+  }
+};
+
 // Crear pedido
 export const crearPedido = async (req, res) => {
   try {

@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import Home from "./components/Home";
@@ -14,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import ProductsDashboard from "./components/ProductsDashboard";
 import ProductDetail from "./components/ProductDetail";
 import Perfil from "./components/Perfil";
+import Carrito from "./components/Carrito";
 
 // Remount por id: al navegar detalle -> detalle (ej. desde el buscador del
 // Header) resetea imagen activa, cantidad y feedback sin setStates en efecto.
@@ -49,7 +51,8 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Routes>
+        <CartProvider>
+          <Routes>
 
           {/* Public routes */}
           <Route
@@ -91,6 +94,17 @@ function App() {
               <>
                 <Header />
                 <ProductDetail />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/carrito"
+            element={
+              <>
+                <Header />
+                <Carrito />
                 <Footer />
               </>
             }
@@ -175,6 +189,7 @@ function App() {
           />
 
         </Routes>
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );
