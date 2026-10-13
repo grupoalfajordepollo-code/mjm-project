@@ -1,7 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import { ShoppingCart, Check } from 'lucide-react';
 import { getAsset } from '../utils/getAssetsUrl';
 import { getBadge, formatPrecio } from '../utils/productoUi';
+import { useCart } from '../context/CartContext';
 
 // Carrusel al hover: avanza las fotos del producto, con gracia breve para
 // ignorar pasadas accidentales y puntitos de posición.
@@ -83,11 +85,22 @@ const ProductCardImage = ({ prod, badge }) => {
   );
 };
 
-// Card de producto reutilizable (home + página de catálogo).
-// Sin acción de carrito: el footer lleva al detalle (carrito pendiente).
 const ProductCard = ({ producto: prod }) => {
+  const { agregarAlCarrito } = useCart();
+  const [agregado, setAgregado] = useState(false);
   const badge = getBadge(prod.stock);
   const agotado = Number(prod.stock) === 0;
+
+  const handleAgregar = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (agotado) return;
+    agregarAlCarrito(prod, 1);
+    setAgregado(true);
+    setTimeout(() => {
+      setAgregado(false);
+    }, 1500);
+  };
 
   return (
     <article className="bg-white rounded-2xl border border-gray-100 shadow-[0_4px_20px_-10px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col transition-transform hover:-translate-y-1">
@@ -110,21 +123,48 @@ const ProductCard = ({ producto: prod }) => {
           {prod.descripcion}
         </p>
 
-        <div className="flex items-center justify-between mt-auto pt-2 border-t border-gray-50">
+        <div className="flex items-center justify-between mt-auto pt-3 border-t border-gray-50 gap-2">
           {!agotado && (
-            <span className="text-xl font-bold text-gray-900">
+            <span className="text-lg sm:text-xl font-bold text-gray-900">
               ${formatPrecio(prod.precio)}
             </span>
           )}
           {agotado ? (
             <span className="text-xs font-bold text-gray-400 ml-auto">Agotado</span>
           ) : (
-            <Link
-              to={`/producto/${prod.id}`}
-              className="ml-auto px-4 py-2 text-xs font-bold text-[#B02F00] bg-[#fff5f2] hover:bg-[#ffece6] rounded-lg transition-colors"
-            >
-              Ver producto
-            </Link>
+            <div className="flex items-center gap-1.5 ml-auto">
+              <Link
+                to={`/producto/${prod.id}`}
+                className="px-2.5 py-1.5 text-xs font-bold text-gray-600 bg-gray-50 hover:bg-gray-100 rounded-lg transition-colors"
+                title="Ver detalle del producto"
+              >
+                Ver
+              </Link>
+              <button
+                type="button"
+                onClick={handleAgregar}
+                disabled={agotado}
+                className={`px-3 py-1.5 text-xs font-bold text-white rounded-lg transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                  agregado
+                    ? 'bg-emerald-600 hover:bg-emerald-700'
+                    : 'bg-[#B02F00] hover:bg-[#8e2600]'
+                }`}
+                title="Agregar al carrito"
+                aria-label={`Agregar ${prod.nombre} al carrito`}
+              >
+                {agregado ? (
+                  <>
+                    <Check size={14} strokeWidth={2.5} />
+                    <span>Listo</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingCart size={14} strokeWidth={2} />
+                    <span>Agregar</span>
+                  </>
+                )}
+              </button>
+            </div>
           )}
         </div>
       </div>

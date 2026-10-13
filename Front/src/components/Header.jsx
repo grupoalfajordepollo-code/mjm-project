@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { Search, ShoppingCart, CircleUserRound } from 'lucide-react';
 import { useNavigate, Link, NavLink, useLocation, useSearchParams } from 'react-router-dom';
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 import { obtenerProductos } from "../services/productoService";
 import { getAsset } from "../utils/getAssetsUrl";
 
 const Header = () => {
   const { user, logout } = useAuth();
+  const { totalItems } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   // En pantallas de autenticación el buscador de productos no tiene sentido
@@ -267,13 +269,18 @@ const Header = () => {
           )}
 
           <div className="flex items-center gap-3 text-gray-700">
-            <button 
-              type="button" 
-              className="p-1.5 hover:text-[#B02F00] cursor-pointer transition-colors rounded-full hover:bg-gray-100"
-              aria-label="Carrito de compras"
+            <Link 
+              to="/carrito" 
+              className="relative p-1.5 hover:text-[#B02F00] cursor-pointer transition-colors rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-700"
+              aria-label={`Carrito de compras${totalItems > 0 ? `, ${totalItems} productos` : ''}`}
             >
               <ShoppingCart className="h-5 w-5" strokeWidth={1.8} />
-            </button>
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#ff4a11] text-white text-[10px] font-black rounded-full h-4 min-w-[16px] px-1 flex items-center justify-center shadow-sm">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
+            </Link>
 
             <Link 
               to={user ? "/perfil" : "/login"}

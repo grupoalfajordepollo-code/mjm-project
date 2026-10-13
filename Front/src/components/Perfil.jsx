@@ -1,7 +1,19 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { 
+  Package, 
+  Clock, 
+  Truck, 
+  CheckCircle2, 
+  XCircle, 
+  ChevronDown, 
+  ChevronUp, 
+  CreditCard 
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import api from "../services/api";
+import { obtenerPedidosPorUsuario } from "../services/pedidoService";
+import { getAsset } from "../utils/getAssetsUrl";
 
 function Perfil() {
   const navigate = useNavigate();
@@ -40,6 +52,94 @@ function Perfil() {
   const [mensajeDomicilio, setMensajeDomicilio] = useState("");
   const [errorDomicilio, setErrorDomicilio] = useState("");
 
+  const [pedidos, setPedidos] = useState([]);
+  const [cargandoPedidos, setCargandoPedidos] = useState(true);
+  const [errorPedidos, setErrorPedidos] = useState("");
+  const [pedidoExpandidoId, setPedidoExpandidoId] = useState(null);
+
+  const renderEstadoBadge = (estado) => {
+    switch (estado) {
+      case "Pendiente":
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+            <Clock size={12} />
+            Pendiente
+          </span>
+        );
+      case "Enviado":
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-sky-50 text-sky-700 border border-sky-200">
+            <Truck size={12} />
+            Enviado
+          </span>
+        );
+      case "Entregado":
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <CheckCircle2 size={12} />
+            Entregado
+          </span>
+        );
+      case "Cancelado":
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-zinc-100 text-zinc-600 border border-zinc-200">
+            <XCircle size={12} />
+            Cancelado
+          </span>
+        );
+      default:
+        return (
+          <span className="inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-full bg-gray-50 text-gray-600 border border-gray-200">
+            {estado || "Pendiente"}
+          </span>
+        );
+    }
+  };
+
+  const formatFecha = (valor) => {
+    if (!valor) return "-";
+    const d = new Date(valor);
+    if (isNaN(d.getTime())) return "-";
+    return d.toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  };
+
+  const formatMoney = (valor) => {
+    return `$${Number(valor || 0).toLocaleString("es-AR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })}`;
+  };
+
+  // =====================================================
+  // CARGAR PEDIDOS DESDE LA BASE
+  // =====================================================
+
+  const cargarPedidos = () => {
+    if (!user?.id) {
+      setCargandoPedidos(false);
+      return Promise.resolve();
+    }
+
+    setCargandoPedidos(true);
+    setErrorPedidos("");
+
+    return obtenerPedidosPorUsuario(user.id)
+      .then((response) => {
+        setPedidos(Array.isArray(response.data) ? response.data : []);
+      })
+      .catch((err) => {
+        console.error("Error al obtener pedidos:", err);
+        setErrorPedidos("No se pudieron cargar tus pedidos.");
+      })
+      .finally(() => {
+        setCargandoPedidos(false);
+      });
+  };
+
   // =====================================================
   // CARGAR DOMICILIOS DESDE LA BASE
   // =====================================================
@@ -77,18 +177,12 @@ function Perfil() {
       telefono: user.telefono || "",
     });
 
-    api
-      .get(`/domicilios/usuario/${user.id}`)
-      .then((response) => {
-        setDomicilios(response.data);
-      })
-      .catch((err) => {
-        console.error("Error al obtener domicilios:", err);
-        setErrorDomicilio("No se pudieron cargar los domicilios.");
-      })
-      .finally(() => {
-        setCargando(false);
-      });
+    Promise.allSettled([
+      cargarDomicilios(),
+      cargarPedidos()
+    ]).finally(() => {
+      setCargando(false);
+    });
   }, [user, isAuthenticated, navigate]);
 
   // =====================================================
@@ -513,7 +607,7 @@ function Perfil() {
         {/* DOMICILIOS */}
         {/* ================================================= */}
 
-        <section className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+        <section className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden mb-8">
 
           <div className="px-8 py-6 border-b border-gray-200 flex items-center justify-between">
 
@@ -798,6 +892,175 @@ function Perfil() {
 
           </div>
 
+        </section>
+
+        {/* ================================================= */}
+        {/* MIS PEDIDOS */}
+        {/* ================================================= */}
+
+        <section className="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
+          <div className="px-8 py-6 border-b border-gray-200 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-[#0F172A]">
+                Mis pedidos
+              </h2>
+              <p className="text-sm text-[#64748B] mt-1">
+                Historial y estado de tus compras e impresiones 3D.
+              </p>
+            </div>
+            {pedidos.length > 0 && (
+              <span className="text-xs font-bold bg-gray-100 text-[#0F172A] px-3 py-1.5 rounded-full">
+                {pedidos.length} {pedidos.length === 1 ? 'pedido' : 'pedidos'}
+              </span>
+            )}
+          </div>
+
+          <div className="p-8">
+            {errorPedidos && (
+              <div className="mb-6 p-4 rounded-lg bg-red-50 border border-red-200 text-red-700 text-sm">
+                {errorPedidos}
+              </div>
+            )}
+
+            {cargandoPedidos ? (
+              <div className="py-12 text-center text-[#64748B] text-sm">
+                Cargando historial de pedidos...
+              </div>
+            ) : pedidos.length === 0 ? (
+              <div className="text-center py-10">
+                <div className="w-14 h-14 bg-orange-50 text-[#B02F00] rounded-2xl flex items-center justify-center mx-auto mb-3">
+                  <Package size={28} />
+                </div>
+                <h3 className="font-semibold text-[#0F172A]">
+                  Todavía no tenés pedidos registrados
+                </h3>
+                <p className="text-[#64748B] text-sm mt-1 max-w-sm mx-auto">
+                  Tus compras e impresiones 3D aparecerán aquí para que puedas seguir su estado en tiempo real.
+                </p>
+                <Link
+                  to="/catalogo"
+                  className="inline-block mt-5 bg-[#B02F00] text-white px-5 py-2.5 rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+                >
+                  Explorar Catálogo
+                </Link>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {pedidos.map((pedido) => {
+                  const estaExpandido = pedidoExpandidoId === pedido.id;
+                  const estadoBadge = renderEstadoBadge(pedido.estado);
+                  const items = Array.isArray(pedido.items) ? pedido.items : [];
+                  const totalItems = items.reduce((acc, it) => acc + (Number(it.cantidad) || 0), 0);
+
+                  return (
+                    <div
+                      key={pedido.id}
+                      className="border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 transition-colors"
+                    >
+                      {/* Cabecera del pedido */}
+                      <div className="p-5 sm:p-6 bg-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-3">
+                            <span className="font-bold text-base text-[#0F172A]">
+                              Pedido #{pedido.id}
+                            </span>
+                            {estadoBadge}
+                          </div>
+                          <p className="text-xs text-[#64748B]">
+                            Realizado el {formatFecha(pedido.fechaPedido || pedido.createdAt)}
+                            {totalItems > 0 && ` • ${totalItems} ${totalItems === 1 ? 'pieza' : 'piezas'}`}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center justify-between sm:justify-end gap-5">
+                          <div className="text-left sm:text-right">
+                            <span className="text-xs text-[#64748B] block">Total</span>
+                            <span className="text-lg font-extrabold text-[#0F172A] tabular-nums">
+                              {formatMoney(pedido.total)}
+                            </span>
+                          </div>
+
+                          <button
+                            type="button"
+                            onClick={() => setPedidoExpandidoId(estaExpandido ? null : pedido.id)}
+                            className="inline-flex items-center gap-1.5 text-xs font-bold text-[#B02F00] hover:text-[#8a2400] transition-colors py-2 px-3 rounded-lg hover:bg-orange-50 cursor-pointer"
+                          >
+                            <span>{estaExpandido ? 'Ocultar' : 'Detalles'}</span>
+                            {estaExpandido ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Detalle expandible */}
+                      {estaExpandido && (
+                        <div className="border-t border-gray-100 bg-[#fafbfc] p-5 sm:p-6 space-y-4">
+                          {items.length > 0 ? (
+                            <div className="space-y-3">
+                              <h4 className="text-xs font-bold uppercase tracking-wider text-[#64748B]">
+                                Productos en este pedido
+                              </h4>
+                              <div className="divide-y divide-gray-100 bg-white rounded-lg border border-gray-200 overflow-hidden">
+                                {items.map((it, idx) => {
+                                  const prod = it.producto || {};
+                                  const imgRel = prod.imagenes?.[0]?.imagen;
+                                  const imgSrc = imgRel ? getAsset(imgRel) : null;
+
+                                  return (
+                                    <div key={idx} className="p-3.5 flex items-center justify-between gap-4">
+                                      <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-12 h-12 rounded-lg bg-[#0F172A] flex items-center justify-center overflow-hidden shrink-0">
+                                          {imgSrc ? (
+                                            <img src={imgSrc} alt={prod.nombre} className="w-full h-full object-cover" />
+                                          ) : (
+                                            <Package size={20} className="text-white/60" />
+                                          )}
+                                        </div>
+                                        <div className="min-w-0">
+                                          <p className="text-sm font-bold text-[#0F172A] truncate">
+                                            {prod.nombre || 'Pieza 3D personalizada'}
+                                          </p>
+                                          <p className="text-xs text-[#64748B]">
+                                            Cantidad: {it.cantidad} {it.precioUnitario && `• ${formatMoney(it.precioUnitario)} c/u`}
+                                          </p>
+                                        </div>
+                                      </div>
+                                      <span className="text-sm font-bold text-[#0F172A] tabular-nums shrink-0">
+                                        {formatMoney(it.subtotal || (Number(it.precioUnitario || 0) * it.cantidad))}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="bg-white rounded-lg border border-gray-200 p-4 text-xs text-[#64748B]">
+                              Pedido registrado para producción personalizada.
+                            </div>
+                          )}
+
+                          {/* Info de Pago / Entrega */}
+                          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 text-xs text-[#64748B]">
+                            <div className="flex items-center gap-2">
+                              <CreditCard size={15} className="text-[#64748B]" />
+                              <span>Método de pago: <strong>{pedido.pago?.metodoPago || 'MercadoPago / Directo'}</strong></span>
+                              {pedido.pago?.estadoPago && (
+                                <span className="ml-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700">
+                                  {pedido.pago.estadoPago}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[#94A3B8]">
+                              ID de seguimiento: #{pedido.id}
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         </section>
 
       </div>
