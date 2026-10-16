@@ -24,3 +24,6 @@ dist-ssr
 *.sw?
 *.env
 .keys/
+
+# Uploads del servidor de estáticos de express
+uploads/*
