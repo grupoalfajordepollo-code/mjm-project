@@ -16,6 +16,10 @@ import ProductsDashboard from "./components/ProductsDashboard";
 import ProductDetail from "./components/ProductDetail";
 import Perfil from "./components/Perfil";
 import Carrito from "./components/Carrito";
+import Terminos from "./components/Terminos";
+import Privacidad from "./components/Privacidad";
+import Soporte from "./components/Soporte";
+import Contacto from "./components/Contacto";
 
 // Remount por id: al navegar detalle -> detalle (ej. desde el buscador del
 // Header) resetea imagen activa, cantidad y feedback sin setStates en efecto.
@@ -155,6 +159,50 @@ function App() {
               <>
                 <Header />
                 <Unauthorized401 />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/terminos"
+            element={
+              <>
+                <Header />
+                <Terminos />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/privacidad"
+            element={
+              <>
+                <Header />
+                <Privacidad />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/soporte"
+            element={
+              <>
+                <Header />
+                <Soporte />
+                <Footer />
+              </>
+            }
+          />
+
+          <Route
+            path="/contacto"
+            element={
+              <>
+                <Header />
+                <Contacto />
                 <Footer />
               </>
             }

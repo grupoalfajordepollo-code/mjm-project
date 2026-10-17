@@ -170,7 +170,15 @@ const RegisterForm = () => {
                 required
               />
               <label htmlFor="terms" className="ml-2 text-sm text-gray-600 cursor-pointer">
-                Acepto los <span className="font-bold text-[#B02F00] hover:underline">Términos y Condiciones</span>
+                Acepto los{" "}
+                <Link
+                  to="/terminos"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-bold text-[#B02F00] hover:underline"
+                >
+                  Términos y Condiciones
+                </Link>
               </label>
             </div>
 

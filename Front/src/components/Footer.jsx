@@ -1,4 +1,5 @@
 import { Share2, Globe } from 'lucide-react';
+import {Link} from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -20,10 +21,14 @@ const Footer = () => {
               Marketplace
             </h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Branding</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Bazar</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Juguetes</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Hobbie</a></li>
+              <li><Link to={`/catalogo?cat=${encodeURIComponent('Impresión 3D')}`} className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Impresión 3D</Link></li>
+              <li><Link to={`/catalogo?cat=${encodeURIComponent('Filamento')}`} className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Filamento</Link></li>
+              <li><Link to={`/catalogo?cat=${encodeURIComponent('Repuestos')}`} className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Repuestos</Link></li>
+              <li><Link to={`/catalogo?cat=${encodeURIComponent('Accesorios')}`} className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">
+                Accesorios</Link></li>
+              <li>
+                <Link to={`/catalogo?cat=${encodeURIComponent('Juguetes')}`} className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Juguetes</Link>
+              </li>
             </ul>
           </div>
 
@@ -32,10 +37,10 @@ const Footer = () => {
               Empresa
             </h4>
             <ul className="space-y-3">
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Soporte</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Términos</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Privacidad</a></li>
-              <li><a href="#" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Contacto</a></li>
+              <li><Link to="/soporte" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Soporte</Link></li>
+              <li><Link to="/terminos" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Términos</Link></li>
+              <li><Link to="/privacidad" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Privacidad</Link></li>
+              <li><Link to="/contacto" className="text-sm text-gray-500 hover:text-[#B02F00] transition-colors">Contacto</Link></li>
             </ul>
           </div>
 
