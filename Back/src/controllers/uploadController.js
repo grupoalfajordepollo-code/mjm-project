@@ -1,66 +1,69 @@
-import upload from "../middlewares/uploadMiddleware.js";
-import { subirImagen } from "../services/ociService.js";
-import { Imagenes } from "../models/index.js";
-import crypto from "crypto";
+import fs from 'fs';
+import crypto from 'crypto';
+import { Imagenes } from '../models/index.js';
 
-export const uploadImage = [
-  upload.single("imagen"),
-  async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ mensaje: "No se envió ningún archivo" });
-      }
+// Este controller SOLO maneja la lógica de negocio y persistencia en DB
+// Ya no sabe de Multer, límites ni filtros. Solo asume que req.file existe.
+export const uploadImage = async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ mensaje: "No se envió ningún archivo" });
+    }
 
-      const idProducto = req.body.idProducto || null;
-      const hash = crypto.createHash("sha256").update(req.file.buffer).digest("hex");
+    const idProducto = req.body.idProducto || null;
+    const resultados = [];
 
-      // paranoid:false porque una fila borrada (soft delete) SIGUE ocupando el
-      // UNIQUE de hash en MySQL. Sin esto, re-subir un archivo alguna vez usado
-      // y borrado → findOne no lo ve → re-sube bytes → el INSERT choca con el UNIQUE.
+    for (const file of req.files) {
+      const fileBuffer = fs.readFileSync(file.path);
+      const hash = crypto.createHash("sha256").update(fileBuffer).digest("hex");
+
       const existente = await Imagenes.findOne({ where: { hash }, paranoid: false });
       const mismoDueño = existente && String(existente.idProducto) === String(idProducto);
 
-      // 1. Vigente y mismo dueño → se devuelve tal cual (sin re-subir)
+      // Si existe vigente del mismo dueño
       if (existente && !existente.deletedAt && mismoDueño) {
-        console.log(`[Upload] Imagen reutilizada: ${existente.imagen}`);
-        return res.status(201).json(existente);
+        fs.unlinkSync(file.path);
+        resultados.push(existente);
+        continue;
       }
 
-      // 2. Borrada del mismo dueño → se restaura y va al final de la galería
+      // Si estaba borrada del mismo dueño, restauramos
       if (existente && existente.deletedAt && mismoDueño) {
+        fs.unlinkSync(file.path);
         await existente.restore();
         const maxOrden = await Imagenes.max("orden", { where: { idProducto } });
         await existente.update({ orden: (maxOrden ?? -1) + 1 });
         await existente.reload();
-        console.log(`[Upload] Imagen restaurada: ${existente.imagen}`);
-        return res.status(201).json(existente);
+        resultados.push(existente);
+        continue;
       }
 
-      // 3. Resto (otro dueño, sin dueño, o hash nuevo): fila nueva. Si el path
-      // se conoce se reutiliza sin re-subir a OCI; hash NULL para no chocar con
-      // el UNIQUE (la fila original conserva el hash canónico).
-      const path = existente
-        ? existente.imagen
-        : await subirImagen(req.file.buffer, req.file.originalname);
+      // Archivo nuevo
+      const rutaPublica = `/archivos/images/${file.filename}`;
+      const maxOrden = await Imagenes.max("orden", { where: { idProducto } });
 
-      const maxOrden = await Imagenes.max("orden", { where: { idProducto } })
-
-      const imagen = await Imagenes.create({
-        orden:(maxOrden ?? -1)+1,
-
-        imagen: path,
-        // NULL no choca con el UNIQUE de hash (MySQL permite varios NULL)
+      const nuevaImagen = await Imagenes.create({
+        idProducto,
+        orden: (maxOrden ?? -1) + 1,
+        imagen: rutaPublica,
         hash: existente ? null : hash,
         descripcion: req.body.descripcion || null,
-        idProducto,
       });
-      res.status(201).json(imagen);
-    } catch (error) {
-      console.error('Error al subir imagen:', error);
-      if (error?.name === 'SequelizeUniqueConstraintError') {
-        return res.status(409).json({ mensaje: 'Esa imagen ya está registrada. Reintentá la subida.' });
-      }
-      res.status(500).json({ mensaje: error.message });
+
+      resultados.push(nuevaImagen);
     }
-  },
-];
+
+    return res.status(201).json(resultados);
+
+
+
+  } catch (error) {
+    console.error("[Upload Controller Error]:", error);
+
+    if (error?.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({ mensaje: "Esa imagen ya está registrada." });
+    }
+
+    return res.status(500).json({ mensaje: error.message || "Error interno del servidor" });
+  }
+};

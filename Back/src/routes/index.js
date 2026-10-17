@@ -12,7 +12,10 @@ import domicilioRoutes from "./domicilioRoutes.js";
 import imagenesRoutes from "./imagenesRoutes.js";
 import itemxPedidoRoutes from "./itemxPedidoRoutes.js";
 import administradorRoutes from "./administradorRoutes.js";
+
 import uploadRoutes from "./uploadRoutes.js"
+import { UPLOADS_DIR } from "../config/multer.config.js";
+import express from 'express';
 
 const router = Router();
 
@@ -61,7 +64,10 @@ router.use("/items-pedido", itemxPedidoRoutes);
 router.use("/administradores", administradorRoutes);
 
 //Carga de Imagenes
-router.use("/upload", uploadRoutes)
+router.use("/upload", uploadRoutes);
+
+//Servir archivos estáticos
+router.use('/archivos', express.static(UPLOADS_DIR));
 
 export default router;
 

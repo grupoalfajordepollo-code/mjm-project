@@ -14,7 +14,7 @@ import {
   XCircle,
 } from 'lucide-react';
 import { crearProducto, actualizarProducto, obtenerProducto, obtenerCategorias } from '../services/productoService';
-import { subirImagen } from '../services/uploadService';
+import { subirImagenes } from '../services/uploadService';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { getAsset } from '../utils/getAssetsUrl';
@@ -230,10 +230,12 @@ const ProductCreation = ({ productoId, setVistaActiva }) => {
       }
 
       // 2. Subir las fotos nuevas asociadas al producto
-      const idsCreados = [];
-      for (const nuevo of archivosNuevos) {
-        const creada = await subirImagen(nuevo.file, '', productId);
-        idsCreados.push(creada.id);
+      let idsCreados = [];
+      if (archivosNuevos.length > 0) {
+        const creadas = await subirImagenes(
+          archivosNuevos.map((nuevo) => nuevo.file),
+          productId);
+        idsCreados = creadas.map((img) => img.id)
       }
 
       // 3. Borrar las fotos quitadas en edición
