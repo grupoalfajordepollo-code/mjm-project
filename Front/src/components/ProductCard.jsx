@@ -95,7 +95,8 @@ const ProductCard = ({ producto: prod }) => {
     e.preventDefault();
     e.stopPropagation();
     if (agotado) return;
-    agregarAlCarrito(prod, 1);
+    const ok = agregarAlCarrito(prod, 1);
+    if (!ok) return;
     setAgregado(true);
     setTimeout(() => {
       setAgregado(false);

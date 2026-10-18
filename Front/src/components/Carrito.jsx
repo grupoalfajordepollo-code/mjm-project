@@ -52,7 +52,14 @@ const renderIconoTag = (label, tipo) => {
 
 const Carrito = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+
   const { 
     cart, 
     subtotal, 
@@ -222,7 +229,8 @@ const Carrito = () => {
             
             <div className="lg:col-span-2 space-y-4">
               {cart.map((item) => {
-                const stockDisponible = Number(item.stock) ?? Infinity;
+                const numStock = Number(item.stock);
+                const stockDisponible = Number.isFinite(numStock) ? numStock : Infinity;
                 const disableMinus = item.cantidad <= 1;
                 const disablePlus = item.cantidad >= stockDisponible;
                 const itemImg = item.imagen ? getAsset(item.imagen) : getAsset();
