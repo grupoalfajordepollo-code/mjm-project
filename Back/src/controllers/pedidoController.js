@@ -1,8 +1,4 @@
-import Pedido from "../models/Pedido.js";
-import Usuario from "../models/Usuario.js";
-import ItemxPedido from "../models/ItemxPedido.js";
-import Producto from "../models/Producto.js";
-import Pago from "../models/Pago.js";
+import { Pedido, Usuario, ItemxPedido, Producto, Pago, Imagenes } from "../models/index.js";
 
 // Obtener todos los pedidos
 export const obtenerPedidos = async (req, res) => {
@@ -20,7 +16,13 @@ export const obtenerPedidos = async (req, res) => {
           include: [
             {
               model: Producto,
-              as: "producto"
+              as: "producto",
+              include: [
+                {
+                  model: Imagenes,
+                  as: "imagenes"
+                }
+              ]
             }
           ]
         },
@@ -28,7 +30,8 @@ export const obtenerPedidos = async (req, res) => {
           model: Pago,
           as: "pago"
         }
-      ]
+      ],
+      order: [["id", "DESC"]]
     });
 
     res.json(pedidos);
@@ -56,7 +59,13 @@ export const obtenerPedido = async (req, res) => {
           include: [
             {
               model: Producto,
-              as: "producto"
+              as: "producto",
+              include: [
+                {
+                  model: Imagenes,
+                  as: "imagenes"
+                }
+              ]
             }
           ]
         },
@@ -104,7 +113,13 @@ export const obtenerPedidosPorUsuario = async (req, res) => {
           include: [
             {
               model: Producto,
-              as: "producto"
+              as: "producto",
+              include: [
+                {
+                  model: Imagenes,
+                  as: "imagenes"
+                }
+              ]
             }
           ]
         },
@@ -132,7 +147,9 @@ export const crearPedido = async (req, res) => {
       idUsuario,
       fechaPedido,
       total,
-      estado
+      estado,
+      items,
+      metodoPago
     } = req.body;
 
     const usuario = await Usuario.findByPk(idUsuario);
@@ -145,12 +162,79 @@ export const crearPedido = async (req, res) => {
 
     const pedido = await Pedido.create({
       idUsuario,
-      fechaPedido,
+      fechaPedido: fechaPedido || new Date(),
       total,
-      estado
+      estado: estado || "Pendiente"
     });
 
-    res.status(201).json(pedido);
+    if (Array.isArray(items) && items.length > 0) {
+      for (const it of items) {
+        const idProducto = it.idProducto || it.id;
+        const cantidad = Number(it.cantidad) || 1;
+        let precioUnitario = Number(it.precioUnitario ?? it.precio);
+
+        if (!precioUnitario || isNaN(precioUnitario)) {
+          const prodObj = await Producto.findByPk(idProducto);
+          precioUnitario = prodObj ? Number(prodObj.precio) : 0;
+        }
+
+        const subtotal = Number(it.subtotal) || (precioUnitario * cantidad);
+
+        await ItemxPedido.create({
+          idPedido: pedido.id,
+          idProducto,
+          cantidad,
+          precioUnitario,
+          subtotal
+        });
+      }
+    }
+
+    if (metodoPago) {
+      const nombreMetodo = String(metodoPago).toLowerCase() === "transferencia"
+        ? "Transferencia Bancaria"
+        : "MercadoPago";
+
+      await Pago.create({
+        idPedido: pedido.id,
+        metodoPago: nombreMetodo,
+        estadoPago: "Aprobado",
+        fechaPago: new Date(),
+        monto: total
+      });
+    }
+
+    const pedidoCompleto = await Pedido.findByPk(pedido.id, {
+      include: [
+        {
+          model: Usuario,
+          as: "usuario",
+          attributes: ["id", "nombre", "apellido", "email"]
+        },
+        {
+          model: ItemxPedido,
+          as: "items",
+          include: [
+            {
+              model: Producto,
+              as: "producto",
+              include: [
+                {
+                  model: Imagenes,
+                  as: "imagenes"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          model: Pago,
+          as: "pago"
+        }
+      ]
+    });
+
+    res.status(201).json(pedidoCompleto || pedido);
 
   } catch (error) {
     res.status(500).json({
@@ -242,4 +326,3 @@ export const eliminarPedido = async (req, res) => {
     });
   }
 };
-

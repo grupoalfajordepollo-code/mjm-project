@@ -1017,7 +1017,7 @@ function Perfil() {
                                         </div>
                                         <div className="min-w-0">
                                           <p className="text-sm font-bold text-[#0F172A] truncate">
-                                            {prod.nombre || 'Pieza 3D personalizada'}
+                                            {prod.nombre || (it.idProducto ? `Producto #${it.idProducto}` : `Producto #${idx + 1}`)}
                                           </p>
                                           <p className="text-xs text-[#64748B]">
                                             Cantidad: {it.cantidad} {it.precioUnitario && `• ${formatMoney(it.precioUnitario)} c/u`}
@@ -1034,7 +1034,7 @@ function Perfil() {
                             </div>
                           ) : (
                             <div className="bg-white rounded-lg border border-gray-200 p-4 text-xs text-[#64748B]">
-                              Pedido registrado para producción personalizada.
+                              Sin detalle de productos registrado para este pedido.
                             </div>
                           )}
 
