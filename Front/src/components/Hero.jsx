@@ -4,7 +4,7 @@ import { getAsset } from "../utils/getAssetsUrl";
 const Hero = () => {
   const navigate = useNavigate();
 
-  const HeroImgUrl = getAsset("MJMI/Home/Hero.webp");
+  const HeroImgUrl = getAsset("archivos/images/uploads_avatars_1788043013958-test-hero.webp");
 
   const irAlCatalogo = () => {
     navigate("/catalogo");
