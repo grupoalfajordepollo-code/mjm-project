@@ -173,7 +173,8 @@ const ProductDetail = ({ productoProp }) => {
   // Agregar al carrito
   const handleAgregarAlCarrito = () => {
     if (isAgotado) return;
-    agregarAlCarrito(currentProd, cantidad);
+    const ok = agregarAlCarrito(currentProd, cantidad);
+    if (!ok) return;
     setAgregadoFeedback(true);
     setTimeout(() => {
       setAgregadoFeedback(false);

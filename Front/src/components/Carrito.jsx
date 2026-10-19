@@ -52,7 +52,14 @@ const renderIconoTag = (label, tipo) => {
 
 const Carrito = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [isAuthenticated, navigate]);
+
   const { 
     cart, 
     subtotal, 
@@ -150,11 +157,20 @@ const Carrito = () => {
     try {
       if (user?.id) {
         try {
+          const itemsPayload = cart.map((it) => ({
+            idProducto: it.id,
+            cantidad: it.cantidad,
+            precioUnitario: it.precio,
+            subtotal: Number(it.precio || 0) * (it.cantidad || 1)
+          }));
+
           const res = await crearPedido({
             idUsuario: user.id,
             fechaPedido: new Date().toISOString(),
             total: total,
-            estado: 'Pendiente'
+            estado: 'Pendiente',
+            metodoPago: metodoPago,
+            items: itemsPayload
           });
           setPedidoId(res.data?.id || Math.floor(1000 + Math.random() * 9000));
         } catch {
@@ -222,7 +238,8 @@ const Carrito = () => {
             
             <div className="lg:col-span-2 space-y-4">
               {cart.map((item) => {
-                const stockDisponible = Number(item.stock) ?? Infinity;
+                const numStock = Number(item.stock);
+                const stockDisponible = Number.isFinite(numStock) ? numStock : Infinity;
                 const disableMinus = item.cantidad <= 1;
                 const disablePlus = item.cantidad >= stockDisponible;
                 const itemImg = item.imagen ? getAsset(item.imagen) : getAsset();

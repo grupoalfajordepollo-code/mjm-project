@@ -1,4 +1,7 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext(null);
 
@@ -41,31 +44,93 @@ const generarTagsParaProducto = (producto) => {
   return tags;
 };
 
-export const CartProvider = ({ children }) => {
-  // Inicialización desde localStorage
-  const [cart, setCart] = useState(() => {
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      return saved ? JSON.parse(saved) : [];
-    } catch (e) {
-      console.error("Error al cargar carrito desde localStorage:", e);
-      return [];
+const cargarCarritoGuardado = (userId) => {
+  try {
+    const userKey = userId ? `${STORAGE_KEY}_${userId}` : STORAGE_KEY;
+    const guardadoUsuario = localStorage.getItem(userKey);
+    if (guardadoUsuario) {
+      return JSON.parse(guardadoUsuario);
     }
+    const guardadoGeneral = localStorage.getItem(STORAGE_KEY);
+    if (guardadoGeneral) {
+      return JSON.parse(guardadoGeneral);
+    }
+    return [];
+  } catch (e) {
+    console.error("Error al cargar carrito desde localStorage:", e);
+    return [];
+  }
+};
+
+export const CartProvider = ({ children }) => {
+  const { isAuthenticated, user } = useAuth();
+  const navigate = useNavigate();
+
+  const userId = user?.id;
+
+  // Inicialización desde localStorage solo si el cliente está autenticado
+  const [cart, setCart] = useState(() => {
+    if (!isAuthenticated) return [];
+    return cargarCarritoGuardado(userId);
   });
 
+  const [prevAuth, setPrevAuth] = useState({ isAuthenticated, userId });
+
+  // Sincronizar el carrito cuando cambia el estado de autenticación o el usuario
+  if (prevAuth.isAuthenticated !== isAuthenticated || prevAuth.userId !== userId) {
+    setPrevAuth({ isAuthenticated, userId });
+    setCart(isAuthenticated ? cargarCarritoGuardado(userId) : []);
+  }
+
+  // Persistir carrito en localStorage únicamente cuando el cliente está autenticado
   useEffect(() => {
+    if (!isAuthenticated) return;
     try {
+      const userKey = userId ? `${STORAGE_KEY}_${userId}` : STORAGE_KEY;
+      localStorage.setItem(userKey, JSON.stringify(cart));
       localStorage.setItem(STORAGE_KEY, JSON.stringify(cart));
     } catch (e) {
       console.error("Error al persistir carrito:", e);
     }
-  }, [cart]);
+  }, [cart, isAuthenticated, userId]);
+
+  // Redirigir a login si no está autenticado
+  const validarAutenticacion = () => {
+    if (!isAuthenticated) {
+      navigate("/login");
+      return false;
+    }
+    return true;
+  };
+
+  const crearCarrito = (producto = null, cantidad = 1) => {
+    if (!validarAutenticacion()) {
+      return false;
+    }
+
+    if (producto && producto.id) {
+      return agregarAlCarrito(producto, cantidad);
+    }
+
+    if (Array.isArray(producto)) {
+      setCart(producto);
+      return true;
+    }
+
+    setCart([]);
+    return true;
+  };
 
   const agregarAlCarrito = (producto, cantidad = 1) => {
+    if (!validarAutenticacion()) {
+      return false;
+    }
+
     if (!producto || !producto.id) return false;
 
     const cantNum = Math.max(1, Number(cantidad) || 1);
-    const stockDisponible = Number(producto.stock) ?? Infinity;
+    const numStock = Number(producto.stock);
+    const stockDisponible = Number.isFinite(numStock) ? numStock : Infinity;
 
     if (stockDisponible <= 0) {
       return false;
@@ -112,6 +177,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const actualizarCantidad = (id, nuevaCantidad) => {
+    if (!validarAutenticacion()) {
+      return;
+    }
+
     const cantNum = Number(nuevaCantidad);
     if (isNaN(cantNum)) return;
 
@@ -123,7 +192,8 @@ export const CartProvider = ({ children }) => {
     setCart((prevCart) =>
       prevCart.map((item) => {
         if (item.id === id) {
-          const maxStock = Number(item.stock) ?? Infinity;
+          const numStock = Number(item.stock);
+          const maxStock = Number.isFinite(numStock) ? numStock : Infinity;
           return {
             ...item,
             cantidad: Math.min(cantNum, maxStock),
@@ -135,6 +205,10 @@ export const CartProvider = ({ children }) => {
   };
 
   const decrementarCantidad = (id) => {
+    if (!validarAutenticacion()) {
+      return;
+    }
+
     setCart((prevCart) => {
       const item = prevCart.find((it) => it.id === id);
       if (!item) return prevCart;
@@ -148,10 +222,15 @@ export const CartProvider = ({ children }) => {
   };
 
   const incrementarCantidad = (id) => {
+    if (!validarAutenticacion()) {
+      return;
+    }
+
     setCart((prevCart) =>
       prevCart.map((it) => {
         if (it.id === id) {
-          const maxStock = Number(it.stock) ?? Infinity;
+          const numStock = Number(it.stock);
+          const maxStock = Number.isFinite(numStock) ? numStock : Infinity;
           if (it.cantidad < maxStock) {
             return { ...it, cantidad: it.cantidad + 1 };
           }
@@ -162,10 +241,18 @@ export const CartProvider = ({ children }) => {
   };
 
   const eliminarDelCarrito = (id) => {
+    if (!validarAutenticacion()) {
+      return;
+    }
+
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
   };
 
   const vaciarCarrito = () => {
+    if (!validarAutenticacion()) {
+      return;
+    }
+
     setCart([]);
   };
 
@@ -205,6 +292,7 @@ export const CartProvider = ({ children }) => {
         costoEnvio,
         impuestos,
         total,
+        crearCarrito,
         agregarAlCarrito,
         actualizarCantidad,
         incrementarCantidad,
