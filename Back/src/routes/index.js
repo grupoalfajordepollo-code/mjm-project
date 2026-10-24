@@ -17,6 +17,8 @@ import uploadRoutes from "./uploadRoutes.js"
 import { UPLOADS_DIR } from "../config/multer.config.js";
 import express from 'express';
 
+import { sendWelcomeEmail } from '../services/emailService.js';
+
 const router = Router();
 
 // Ruta de prueba
@@ -25,6 +27,16 @@ router.get('/health', (req, res) => {
     status: 'ok',
     message: 'Servidor funcionando correctamente'
   });
+});
+
+//Ruta de prueba de nodemailer
+router.get('/mail-test', async (req, res) => {
+  try {
+    await sendWelcomeEmail('tu_email@ejemplo.com', 'Test User');
+    res.send('✅ Correo de prueba enviado (revisá tu bandeja / spam)');
+  } catch (error) {
+    res.status(500).send('❌ Error enviando correo');
+  }
 });
 
 // Usuarios
