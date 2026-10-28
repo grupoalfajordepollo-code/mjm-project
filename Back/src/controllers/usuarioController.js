@@ -1,4 +1,6 @@
+
 import Usuario from "../models/Usuario.js";
+import { enviarCorreo } from "../services/emailService.js";
 
 // Obtener todos los usuarios
 export const obtenerUsuarios = async (req, res) => {
@@ -43,7 +45,7 @@ export const obtenerUsuario = async (req, res) => {
   }
 };
 
-// Crear usuario
+// Crear usuario y enviar correo de bienvenida
 export const crearUsuario = async (req, res) => {
   try {
     const {
@@ -64,6 +66,37 @@ export const crearUsuario = async (req, res) => {
 
     const resultado = usuario.toJSON();
     delete resultado.password;
+
+    // Enviar correo de bienvenida al usuario registrado
+    try {
+      await enviarCorreo(
+        usuario.email,
+        "Bienvenido a MJM 3D",
+        `Hola ${usuario.nombre} ${usuario.apellido}:
+
+Tu cuenta fue creada correctamente.
+
+Te damos la bienvenida a MJM 3D.
+
+Ya podés ingresar a nuestra tienda y explorar
+nuestro catálogo de productos impresos en 3D.
+
+¡Gracias por registrarte!
+
+Equipo MJM 3D`
+      );
+
+      console.log(
+        "Correo de bienvenida enviado a:",
+        usuario.email
+      );
+
+    } catch (errorCorreo) {
+      console.error(
+        "Error al enviar correo de bienvenida:",
+        errorCorreo.message
+      );
+    }
 
     res.status(201).json(resultado);
 
@@ -170,4 +203,3 @@ export const eliminarUsuario = async (req, res) => {
     });
   }
 };
-

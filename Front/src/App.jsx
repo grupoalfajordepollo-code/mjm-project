@@ -1,3 +1,4 @@
+
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
@@ -21,8 +22,12 @@ import Privacidad from "./components/Privacidad";
 import Soporte from "./components/Soporte";
 import Contacto from "./components/Contacto";
 
-// Remount por id: al navegar detalle -> detalle (ej. desde el buscador del
-// Header) resetea imagen activa, cantidad y feedback sin setStates en efecto.
+// Componentes de recuperación de contraseña
+import RecuperarPassword from "./components/RecuperarPassword";
+import RestablecerPassword from "./components/RestablecerPassword";
+
+// Remount por id: al navegar detalle -> detalle
+// resetea imagen activa, cantidad y feedback.
 const ProductDetailRoute = () => {
   const { id } = useParams();
   return <ProductDetail key={id ?? "sin-id"} />;
@@ -32,15 +37,10 @@ function App() {
   useEffect(() => {
     const text = "MJM 3D - Impresiones y Diseños Únicos";
 
-    // Usamos el espacio en blanco especial '\u2000' (En-Space)
-    // para homogeneizar el ancho
     const separator = "\u2000\u2000•\u2000\u2000";
     const marqueeText = `${text}${separator}`;
 
     let index = 0;
-
-    // 200ms es la velocidad donde el navegador logra renderizar
-    // CADA frame sin saltearse ticks
     const speed = 200;
 
     const interval = setInterval(() => {
@@ -58,185 +58,208 @@ function App() {
         <CartProvider>
           <Routes>
 
-          {/* Public routes */}
-          <Route
-            path="/"
-            element={
-              <>
-                <Header />
-                <Home />
-                <Footer />
-              </>
-            }
-          />
+            {/* Rutas públicas */}
+            <Route
+              path="/"
+              element={
+                <>
+                  <Header />
+                  <Home />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/catalogo"
-            element={
-              <>
-                <Header />
-                <CatalogPage />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/catalogo"
+              element={
+                <>
+                  <Header />
+                  <CatalogPage />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/producto/:id"
-            element={
-              <>
-                <Header />
-                <ProductDetailRoute />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/producto/:id"
+              element={
+                <>
+                  <Header />
+                  <ProductDetailRoute />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/producto"
-            element={
-              <>
-                <Header />
-                <ProductDetail />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/producto"
+              element={
+                <>
+                  <Header />
+                  <ProductDetail />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/carrito"
-            element={
-              <>
-                <Header />
-                <Carrito />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/carrito"
+              element={
+                <>
+                  <Header />
+                  <Carrito />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/login"
-            element={
-              <>
-                <Header />
-                <LoginForm />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/login"
+              element={
+                <>
+                  <Header />
+                  <LoginForm />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/login-admin"
-            element={<AdminLoginForm />}
-          />
+            <Route
+              path="/login-admin"
+              element={<AdminLoginForm />}
+            />
 
-          <Route
-            path="/registro"
-            element={
-              <>
-                <Header />
-                <RegisterForm />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/registro"
+              element={
+                <>
+                  <Header />
+                  <RegisterForm />
+                  <Footer />
+                </>
+              }
+            />
 
-          {/* Perfil de usuario */}
-          <Route
-            path="/perfil"
-            element={
-              <>
-                <Header />
-                <Perfil />
-                <Footer />
-              </>
-            }
-          />
+            {/* Recuperación de contraseña */}
+            <Route
+              path="/recuperar-password"
+              element={
+                <>
+                  <Header />
+                  <RecuperarPassword />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/401"
-            element={
-              <>
-                <Header />
-                <Unauthorized401 />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/restablecer-password"
+              element={
+                <>
+                  <Header />
+                  <RestablecerPassword />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/terminos"
-            element={
-              <>
-                <Header />
-                <Terminos />
-                <Footer />
-              </>
-            }
-          />
+            {/* Perfil de usuario */}
+            <Route
+              path="/perfil"
+              element={
+                <>
+                  <Header />
+                  <Perfil />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/privacidad"
-            element={
-              <>
-                <Header />
-                <Privacidad />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/401"
+              element={
+                <>
+                  <Header />
+                  <Unauthorized401 />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/soporte"
-            element={
-              <>
-                <Header />
-                <Soporte />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/terminos"
+              element={
+                <>
+                  <Header />
+                  <Terminos />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/contacto"
-            element={
-              <>
-                <Header />
-                <Contacto />
-                <Footer />
-              </>
-            }
-          />
+            <Route
+              path="/privacidad"
+              element={
+                <>
+                  <Header />
+                  <Privacidad />
+                  <Footer />
+                </>
+              }
+            />
 
-          {/* Protected routes */}
-          <Route
-            path="/panel-secured"
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <ProductsDashboard key="productos" />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/soporte"
+              element={
+                <>
+                  <Header />
+                  <Soporte />
+                  <Footer />
+                </>
+              }
+            />
 
-          <Route
-            path="/panel-secured/pedidos"
-            element={
-              <ProtectedRoute requiredRole="admin">
-                <ProductsDashboard
-                  key="pedidos"
-                  vistaInicial="pedidos"
-                />
-              </ProtectedRoute>
-            }
-          />
+            <Route
+              path="/contacto"
+              element={
+                <>
+                  <Header />
+                  <Contacto />
+                  <Footer />
+                </>
+              }
+            />
 
-          {/* If no match route, redirect to 404 */}
-          <Route
-            path="*"
-            element={<NotFound404 />}
-          />
+            {/* Rutas protegidas */}
+            <Route
+              path="/panel-secured"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <ProductsDashboard key="productos" />
+                </ProtectedRoute>
+              }
+            />
 
-        </Routes>
+            <Route
+              path="/panel-secured/pedidos"
+              element={
+                <ProtectedRoute requiredRole="admin">
+                  <ProductsDashboard
+                    key="pedidos"
+                    vistaInicial="pedidos"
+                  />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Página no encontrada */}
+            <Route
+              path="*"
+              element={<NotFound404 />}
+            />
+
+          </Routes>
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>

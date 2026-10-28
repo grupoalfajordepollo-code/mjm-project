@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Mail, Lock, LogIn } from "lucide-react";
@@ -16,7 +17,7 @@ const LoginForm = () => {
       const data = await login(email, password);
       navigate(data.rol === "admin" ? "/panel-secured" : "/");
     } catch {
-      // el error ya se setea en el context
+      // El error ya se establece en el contexto
     }
   };
 
@@ -25,8 +26,12 @@ const LoginForm = () => {
       <div className="w-full max-w-md bg-white rounded-2xl p-8 shadow-[0_4px_20px_-4px_rgba(0,0,0,0.1)] border border-[#e6d5cc]">
 
         <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-900 mb-1">Bienvenido</h1>
-          <p className="text-gray-500 text-sm">Inicia sesión para acceder a tu cuenta.</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-1">
+            Bienvenido
+          </h1>
+          <p className="text-gray-500 text-sm">
+            Inicia sesión para acceder a tu cuenta.
+          </p>
         </div>
 
         {error && (
@@ -60,10 +65,15 @@ const LoginForm = () => {
               <label className="block text-xs font-bold text-gray-700">
                 Contraseña
               </label>
-              <a href="#" className="text-sm font-bold text-[#B02F00] hover:underline">
+
+              <Link
+                to="/recuperar-password"
+                className="text-sm font-bold text-[#B02F00] hover:underline"
+              >
                 ¿Olvidaste tu contraseña?
-              </a>
+              </Link>
             </div>
+
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-600" strokeWidth={1.5} />
@@ -85,7 +95,9 @@ const LoginForm = () => {
             className="cursor-pointer w-full flex items-center justify-center gap-2 bg-[#B02F00] hover:bg-[#8a2500] text-white font-bold py-3 px-4 rounded-lg transition-colors mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? "Ingresando..." : "Iniciar Sesión"}
-            {!loading && <LogIn className="h-5 w-5" strokeWidth={2.5} />}
+            {!loading && (
+              <LogIn className="h-5 w-5" strokeWidth={2.5} />
+            )}
           </button>
         </form>
 
@@ -93,7 +105,10 @@ const LoginForm = () => {
 
         <p className="text-center text-sm text-gray-600">
           ¿No tenés cuenta?{" "}
-          <Link to="/registro" className="font-bold text-[#B02F00] hover:underline">
+          <Link
+            to="/registro"
+            className="font-bold text-[#B02F00] hover:underline"
+          >
             Registrate
           </Link>
         </p>
@@ -104,3 +119,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+
