@@ -1,4 +1,5 @@
 import { Pedido, Usuario, ItemxPedido, Producto, Pago, Imagenes } from "../models/index.js";
+import { notificarNuevoPedido, notificarCambioEstado } from "../services/pedidosEmailService.js"
 
 // Obtener todos los pedidos
 export const obtenerPedidos = async (req, res) => {
@@ -234,6 +235,10 @@ export const crearPedido = async (req, res) => {
       ]
     });
 
+    notificarNuevoPedido(pedidoCompleto).catch((err) => {
+      console.error('Error enviando correos de nuevo pedido:', err);
+    });
+
     res.status(201).json(pedidoCompleto || pedido);
 
   } catch (error) {
@@ -246,7 +251,9 @@ export const crearPedido = async (req, res) => {
 // Actualizar pedido
 export const actualizarPedido = async (req, res) => {
   try {
-    const pedido = await Pedido.findByPk(req.params.id);
+    const pedido = await Pedido.findByPk(req.params.id, {
+      include: [{ model: Usuario, as: "usuario", attributes: ["id", "nombre", "apellido", "email"] }]
+    });
 
     if (!pedido) {
       return res.status(404).json({
@@ -293,6 +300,13 @@ export const actualizarPedido = async (req, res) => {
     }
 
     await pedido.update({ estado });
+
+    
+    if (estado !== undefined && estado !== actual) {
+      notificarCambioEstado(pedido, estado).catch((err) => {
+        console.error("Error al despachar mail de cambio de estado:", err);
+      });
+    }
 
     res.json(pedido);
 
