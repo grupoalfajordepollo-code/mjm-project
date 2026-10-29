@@ -119,7 +119,6 @@ export const notificarCambioEstado = async (pedido, nuevoEstado) => {
   if (!usuario || !usuario.email) return;
 
   const mensajesPorEstado = {
-    'En preparación': 'Tu pedido está siendo armado e impreso por nuestro equipo.',
     'Enviado': '¡Tu pedido está en camino! En breve lo recibirás en tu domicilio.',
     'Entregado': 'Tu pedido figura como entregado. ¡Esperamos que disfrutes tus productos!',
     'Cancelado': 'Tu pedido ha sido cancelado. Si crees que se trata de un error, comunícate con soporte.',
