@@ -1,6 +1,7 @@
 
 import Usuario from "../models/Usuario.js";
 import { enviarCorreo } from "../services/emailService.js";
+import { emailBase, boton, parrafo, sitioUrl } from "../services/emailTemplates.js";
 
 // Obtener todos los usuarios
 export const obtenerUsuarios = async (req, res) => {
@@ -69,22 +70,20 @@ export const crearUsuario = async (req, res) => {
 
     // Enviar correo de bienvenida al usuario registrado
     try {
-      await enviarCorreo(
-        usuario.email,
-        "Bienvenido a MJM 3D",
-        `Hola ${usuario.nombre} ${usuario.apellido}:
-
-Tu cuenta fue creada correctamente.
-
-Te damos la bienvenida a MJM 3D.
-
-Ya podés ingresar a nuestra tienda y explorar
-nuestro catálogo de productos impresos en 3D.
-
-¡Gracias por registrarte!
-
-Equipo MJM 3D`
-      );
+      await enviarCorreo({
+        to: usuario.email,
+        subject: "Bienvenido a MJM 3D",
+        html: emailBase({
+          titulo: `¡Bienvenido, ${usuario.nombre} ${usuario.apellido}!`,
+          kicker: "Cuenta creada",
+          resumen: "Tu cuenta de MJM 3D está lista para usar",
+          notaPie: `Recibiste este correo porque te registraste en MJM 3D con ${usuario.email}.`,
+          cuerpo: `
+            ${parrafo("Tu cuenta quedó creada con éxito. Ya podés explorar nuestro catálogo de productos impresos en 3D, armar tu carrito y realizar tu primer pedido.")}
+            <div style="margin:22px 0 4px;">${boton("Explorar catálogo", sitioUrl("/catalogo"))}</div>
+          `,
+        }),
+      });
 
       console.log(
         "Correo de bienvenida enviado a:",

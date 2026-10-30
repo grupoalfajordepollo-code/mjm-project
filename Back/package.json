@@ -23,7 +23,7 @@
     "morgan": "^1.10.1",
     "multer": "^2.3.0",
     "mysql2": "^3.22.3",
-    "nodemailer": "^10.2.1",
+    "nodemailer": "^10.3.1",
     "oci-sdk": "^2.140.1",
     "sequelize": "^6.37.8"
   },

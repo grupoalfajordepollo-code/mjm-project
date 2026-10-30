@@ -1,5 +1,6 @@
 import Usuario from "../models/Usuario.js";
 import { enviarCorreo } from "../services/emailService.js";
+import { emailBase, boton, parrafo } from "../services/emailTemplates.js";
 import crypto from "node:crypto";
 import jwt from "jsonwebtoken";
 
@@ -40,23 +41,22 @@ export const solicitarRecuperacion = async (req, res) => {
 
     const enlace = `${process.env.FRONTEND_URL}/restablecer-password?token=${encodeURIComponent(token)}`;
 
-    await enviarCorreo(
-      usuario.email,
-      "Recuperación de contraseña - MJM 3D",
-      `Hola ${usuario.nombre}:
-
-Recibimos una solicitud para recuperar tu contraseña.
-
-Ingresá al siguiente enlace para establecer una nueva contraseña:
-
-${enlace}
-
-Este enlace vence en 15 minutos.
-
-Si no solicitaste el cambio, ignorá este mensaje.
-
-Equipo MJM 3D`
-    );
+    await enviarCorreo({
+      to: usuario.email,
+      subject: "Recuperación de contraseña - MJM 3D",
+      html: emailBase({
+        titulo: "Recuperá tu contraseña",
+        kicker: "Recuperación de contraseña",
+        resumen: "Solicitud para restablecer tu contraseña",
+        notaPie: "Recibiste este correo porque se solicitó una recuperación de contraseña para tu cuenta en MJM 3D.",
+        cuerpo: `
+          ${parrafo(`Hola <strong style="color:#1f2328;">${usuario.nombre}</strong>, recibimos una solicitud para recuperar tu contraseña. Elegí una nueva usando el botón de abajo.`)}
+          <div style="margin:20px 0;">${boton("Restablecer contraseña", enlace, { ancho: true })}</div>
+          ${parrafo(`<span style="font-size:12px;color:#9ca3af;">Si el botón no funciona, copiá y pegá este enlace en tu navegador:<br><span style="word-break:break-all;">${enlace}</span></span>`)}
+          ${parrafo('<strong style="color:#1f2328;">El enlace vence en 15 minutos.</strong> Si no fuiste vos quien solicitó el cambio, podés ignorar este correo y tu contraseña actual seguirá funcionando sin cambios.')}
+        `,
+      }),
+    });
 
     res.json({
       mensaje: "Si el correo está registrado, recibirás un enlace de recuperación"
