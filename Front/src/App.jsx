@@ -1,4 +1,3 @@
-
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route, useParams } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
@@ -21,6 +20,7 @@ import Terminos from "./components/Terminos";
 import Privacidad from "./components/Privacidad";
 import Soporte from "./components/Soporte";
 import Contacto from "./components/Contacto";
+import BotonWhatsApp from "./components/BotonWhatsApp";
 
 // Componentes de recuperación de contraseña
 import RecuperarPassword from "./components/RecuperarPassword";
@@ -260,6 +260,10 @@ function App() {
             />
 
           </Routes>
+
+          {/* Botón flotante de WhatsApp */}
+          <BotonWhatsApp />
+
         </CartProvider>
       </AuthProvider>
     </BrowserRouter>
